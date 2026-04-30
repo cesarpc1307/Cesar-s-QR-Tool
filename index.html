@@ -441,8 +441,8 @@
             const [activeTab, setActiveTab] = useState(TAB_DATOS);
             // 'config' | 'preview' — controls which panel is visible on mobile
             const [mobileView, setMobileView] = useState('config');
-            const [bulkText, setBulkText] = useState("https://qrstudiopro.io\nhttps://example.com");
-            const [appliedBulkText, setAppliedBulkText] = useState("https://qrstudiopro.io\nhttps://example.com");
+            const [bulkText, setBulkText] = useState("https://github.com/cesarpc1307/Cesar-s-QR-Tool\nhttps://example.com");
+            const [appliedBulkText, setAppliedBulkText] = useState("https://github.com/cesarpc1307/Cesar-s-QR-Tool\nhttps://example.com");
 
             const [dotStyle, setDotStyle] = useState('square');
             const [eyeFrameStyle, setEyeFrameStyle] = useState('square');
@@ -469,7 +469,7 @@
             useEffect(() => {
                 try {
                     const lines = bulkText.split('\n').filter(l => l.trim() !== '');
-                    let firstUrl = 'https://qrstudiopro.io';
+                    let firstUrl = 'https://github.com/cesarpc1307/Cesar-s-QR-Tool';
                     if (lines.length > 0) {
                         const firstLine = lines[0].trim();
                         const spaceIdx = firstLine.indexOf(' ');
