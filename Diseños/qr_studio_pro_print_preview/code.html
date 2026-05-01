@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>QRGen Pro - Print Layouts</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed-dim": "#89ceff",
+                      "inverse-on-surface": "#eaf1ff",
+                      "tertiary-container": "#a44100",
+                      "surface-container": "#e5eeff",
+                      "background": "#f8f9ff",
+                      "primary-container": "#4f46e5",
+                      "secondary-fixed": "#c9e6ff",
+                      "tertiary-fixed-dim": "#ffb695",
+                      "surface-variant": "#d3e4fe",
+                      "on-tertiary-fixed": "#351000",
+                      "on-background": "#0b1c30",
+                      "surface-container-highest": "#d3e4fe",
+                      "primary-fixed": "#e2dfff",
+                      "on-secondary-fixed-variant": "#004c6e",
+                      "inverse-primary": "#c3c0ff",
+                      "error": "#ba1a1a",
+                      "error-container": "#ffdad6",
+                      "on-primary": "#ffffff",
+                      "on-surface": "#0b1c30",
+                      "outline": "#777587",
+                      "on-primary-container": "#dad7ff",
+                      "secondary-container": "#39b8fd",
+                      "tertiary": "#7e3000",
+                      "secondary": "#006591",
+                      "on-tertiary-container": "#ffd2be",
+                      "on-primary-fixed-variant": "#3323cc",
+                      "surface-container-high": "#dce9ff",
+                      "surface-bright": "#f8f9ff",
+                      "surface": "#f8f9ff",
+                      "on-secondary-container": "#004666",
+                      "on-secondary-fixed": "#001e2f",
+                      "on-primary-fixed": "#0f0069",
+                      "inverse-surface": "#213145",
+                      "on-error-container": "#93000a",
+                      "surface-container-low": "#eff4ff",
+                      "surface-dim": "#cbdbf5",
+                      "on-tertiary": "#ffffff",
+                      "on-surface-variant": "#464555",
+                      "primary": "#3525cd",
+                      "outline-variant": "#c7c4d8",
+                      "on-error": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed": "#ffdbcc",
+                      "surface-tint": "#4d44e3",
+                      "on-tertiary-fixed-variant": "#7b2f00",
+                      "primary-fixed-dim": "#c3c0ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "sm": "12px",
+                      "md": "16px",
+                      "gutter": "20px",
+                      "xl": "32px",
+                      "lg": "24px",
+                      "base": "8px",
+                      "xs": "4px",
+                      "margin": "24px"
+              },
+              "fontFamily": {
+                      "label-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "title-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "display-md": ["Inter"]
+              },
+              "fontSize": {
+                      "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "title-md": ["18px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-sm": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "display-md": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .qr-sheet {
+            aspect-ratio: 1 / 1.414; /* A4 Ratio */
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background">
+<!-- TopNavBar -->
+<header class="bg-white dark:bg-slate-900 sticky top-0 z-50 flex justify-between items-center px-6 h-16 w-full border-b border-slate-200 dark:border-slate-800 font-inter antialiased text-sm">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tight text-indigo-600 dark:text-indigo-400">QRGen Pro</span>
+<nav class="hidden md:flex items-center space-y-0 space-x-6">
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 transition-colors duration-150" href="#">Dashboard</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 transition-colors duration-150" href="#">History</a>
+<a class="text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 font-semibold h-16 flex items-center" href="#">Print Layouts</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 transition-colors duration-150" href="#">Analytics</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-full transition-colors duration-150 active:scale-95">notifications</button>
+<button class="material-symbols-outlined text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-full transition-colors duration-150 active:scale-95">settings</button>
+<div class="h-8 w-8 rounded-full bg-slate-200 overflow-hidden">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="close-up portrait of a professional woman with a friendly smile, clean minimalist lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-2q_7w-FWcG_XJeFJdMr22870PJMXRCW59-CwGYq3mdVq7-SFNWdEoPJE5cHYOxswnW1frcrQ27byz7qcjsqczLzAAa1l5gDIbDJ6qNNEpJRA4IIqKemxFepekTL_9gt998rY_LVmIwuQUMWip5lKlNjcJ1SQMmTIXsaMGGHLsHFhjHVufP0teeMcqDjO6RNHgFF0NNRvhFnR_z5TRDRZbwG_9ztTjUCEO1RrNMwYIQTQrtSfcVWr0-s8_0CUxsAaOElC0bb-4bWJ"/>
+</div>
+<button class="bg-primary-container text-on-primary px-4 py-2 rounded-lg font-semibold active:scale-95 transition-transform">Create New</button>
+</div>
+</header>
+<div class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 bottom-0 w-64 bg-slate-50 dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 flex flex-col p-4 space-y-2 font-inter text-sm">
+<div class="mb-6 px-2">
+<h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Configuration</h3>
+<p class="text-slate-500 text-xs">Workspace Settings</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-md transition-all duration-200" href="#">
+<span class="material-symbols-outlined">qr_code_2</span>
+<span>Generator</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-md transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dynamic_feed</span>
+<span>Bulk Import</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 font-medium rounded-md transition-all duration-200" href="#">
+<span class="material-symbols-outlined">print</span>
+<span>Print Layouts</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-md transition-all duration-200" href="#">
+<span class="material-symbols-outlined">api</span>
+<span>API Access</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-md transition-all duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span>Billing</span>
+</a>
+</nav>
+<div class="mt-auto space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-md" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span>Help Center</span>
+</a>
+<button class="w-full bg-indigo-600 text-white py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors">
+                    Upgrade to Enterprise
+                </button>
+</div>
+</aside>
+<!-- Main Content (Behind Overlay) -->
+<main class="ml-64 flex-1 p-xl">
+<div class="max-w-6xl mx-auto">
+<header class="flex justify-between items-end mb-xl">
+<div>
+<h1 class="font-display-md text-display-md text-on-background mb-xs">Print Layouts</h1>
+<p class="font-body-md text-body-md text-outline">Prepare your generated QR codes for physical printing and distribution.</p>
+</div>
+</header>
+<div class="grid grid-cols-12 gap-lg">
+<div class="col-span-8 space-y-lg">
+<section class="bg-surface-container-lowest p-lg border border-outline-variant rounded-xl">
+<h2 class="font-title-md text-title-md mb-md">Recent Bulk Generation</h2>
+<div class="overflow-hidden rounded-lg border border-outline-variant">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low font-label-sm text-label-sm border-b border-outline-variant">
+<tr>
+<th class="px-md py-sm">Batch Name</th>
+<th class="px-md py-sm">Count</th>
+<th class="px-md py-sm">Date</th>
+<th class="px-md py-sm text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr>
+<td class="px-md py-md font-label-md text-label-md">Summer Campaign A</td>
+<td class="px-md py-md text-body-md">48 Codes</td>
+<td class="px-md py-md text-body-md">Oct 12, 2023</td>
+<td class="px-md py-md text-right">
+<button class="bg-primary text-on-primary px-3 py-1 rounded font-label-sm flex items-center gap-1 ml-auto">
+<span class="material-symbols-outlined text-[18px]">print</span>
+                                                    Print
+                                                </button>
+</td>
+</tr>
+<tr>
+<td class="px-md py-md font-label-md text-label-md">Store Inventory v2</td>
+<td class="px-md py-md text-body-md">120 Codes</td>
+<td class="px-md py-md text-body-md">Oct 10, 2023</td>
+<td class="px-md py-md text-right">
+<button class="bg-primary text-on-primary px-3 py-1 rounded font-label-sm flex items-center gap-1 ml-auto">
+<span class="material-symbols-outlined text-[18px]">print</span>
+                                                    Print
+                                                </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<div class="col-span-4">
+<section class="bg-surface-container-highest/30 p-lg border border-outline-variant rounded-xl">
+<h2 class="font-title-md text-title-md mb-md">Quick Tips</h2>
+<ul class="space-y-sm text-body-md text-on-surface-variant">
+<li class="flex gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span>Use high-contrast colors for better scan rates.</span>
+</li>
+<li class="flex gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span>Minimum recommended size is 2x2cm.</span>
+</li>
+<li class="flex gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span>Leave a quiet zone (padding) around codes.</span>
+</li>
+</ul>
+</section>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Print Preview Overlay (Active State) -->
+<div class="fixed inset-0 z-[60] bg-slate-900/80 backdrop-blur-sm flex flex-col">
+<!-- Control Bar -->
+<div class="bg-white border-b border-slate-200 px-xl py-md flex items-center justify-between shadow-md">
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-indigo-600">print_connect</span>
+<h2 class="font-title-md text-title-md text-slate-900">Print Preview</h2>
+</div>
+<div class="h-8 w-px bg-slate-200"></div>
+<div class="flex items-center gap-base">
+<label class="font-label-md text-slate-600" for="grid-cols">Grid Columns</label>
+<input class="w-16 h-9 rounded border-slate-300 focus:ring-indigo-500 focus:border-indigo-500 text-center font-medium" id="grid-cols" max="6" min="2" type="number" value="4"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="px-xl py-base font-label-md text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                    Close Preview
+                </button>
+<button class="px-xl py-base font-label-md bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-lg flex items-center gap-2 active:scale-95">
+<span class="material-symbols-outlined">print</span>
+                    Print Now
+                </button>
+</div>
+</div>
+<!-- Preview Canvas -->
+<div class="flex-1 overflow-auto p-xl bg-slate-200/50 flex justify-center">
+<div class="qr-sheet bg-white p-12 max-w-[800px] w-full">
+<!-- Simulation of A4 Paper -->
+<div class="grid grid-cols-4 gap-8">
+<!-- QR Code Item -->
+<div class="flex flex-col items-center gap-2 text-center">
+<div class="aspect-square w-full border border-slate-100 bg-slate-50 p-2">
+<img class="w-full h-full object-contain" data-alt="clean black and white qr code with sharp geometric patterns on white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAo6HPEFHu2_uEYE8TY6q10vBhVbJtCnMF9JTI21kAt9q9QBvW4wF2bv1Z425k3T26quoy92NJFhVbcs4-sqs2on-5CT94KTD9U26UmzRwvTsrkxnkw6tnQIdR37qV5b8hzHJQr9uUeCxXDWxdJ34f65jpjUd7vBwTBzo9Ucv7qQtyShLhEbYZM85ZBivTVRq4ZyNsZ_OpUYMDN-iMBepmYjEU42wxpEhdPTEez88cth87epBVUiqYfzMhWSVnIaoFXJXdTnSEMFdjm"/>
+</div>
+<span class="text-[10px] font-medium text-slate-500 truncate w-full">summer-promo-001.pdf</span>
+</div>
+<!-- Repeat QR Code Items -->
+<div class="flex flex-col items-center gap-2 text-center">
+<div class="aspect-square w-full border border-slate-100 bg-slate-50 p-2">
+<img class="w-full h-full object-contain" data-alt="high resolution qr code for digital payment tracking" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1hkQXuBc26gTMyrinXlKK94IIbt4rAsZDnaWs9P_go_K87ULjNzV-KRKWv3Kxu_nXV_rBBfScXsw8Qo1a-WQ0c-ZVnpMX2sOYLfg-JY6NxDQifqqIs2sHHilpOG8DdQOCM7xHcZveSeISmBrzBdXsLJfrunDbx5HkMkDdXW0ljJLZcmn6JEAjnVbOAIHLPJ0HxRN3jF0HbWN3GL1etgmh-VbHsXX_HpHmkyKFHFFkhCBaopuB_RxTsV8pDOuSo_ZGRNYXXyTGjLE5"/>
+</div>
+<span class="text-[10px] font-medium text-slate-500 truncate w-full">summer-promo-002.pdf</span>
+</div>
+<div class="flex flex-col items-center gap-2 text-center">
+<div class="aspect-square w-full border border-slate-100 bg-slate-50 p-2">
+<img class="w-full h-full object-contain" data-alt="minimalist qr code pattern for retail packaging" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNPKsEqZUCOuCUa-NomOJS0bvzSPHXihlPf-L-BT0VQ7Ct94PpClOlhp13Y9YQWce_bwoBtUp4ot-su_3jHIpZ_D62kLm4uFh3JYGGWReXkDUJK_9_aWR-bwk-wgOzfdpLfuh7tktXo6DnPkIjf2mw25MLofzdF4wnei8OMr-HBTwKxyFPyUTWYk6H8yWRGvwPVS0IY5U5FgH4IcCWghukz_DAph1K37Rywo61gnMo-9IHWk_9h2TexBZiCPjqAefTYoGaa4O3-dj0"/>
+</div>
+<span class="text-[10px] font-medium text-slate-500 truncate w-full">summer-promo-003.pdf</span>
+</div>
+<div class="flex flex-col items-center gap-2 text-center">
+<div class="aspect-square w-full border border-slate-100 bg-slate-50 p-2">
+<img class="w-full h-full object-contain" data-alt="modern qr code with brand indigo highlights in corners" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRMpxOw-XZuPDl4OpdD3mjib0rHSXPRVk-ApwWozcs73eBreqF-_xfapIcrMr789Y0xTKMfUpGIM6drlSLlvnycWjbhz0GmZrqlZ1tiVeXNC6JbqkJpO2SquG27i2irs0_VFZ3DTkHqbf0OxC05N3sKRlGHPpZ4AWx2xGdTuUxZlaDIDF8Y_V_dzOKQIr8uMzN2Gv8-8zlDx87GZLty_AGFL9zwDMp8HsKPDEWfJohxcWTyqAB0j2Uz6M4CuVVC39A_fBgI8B0rQTH"/>
+</div>
+<span class="text-[10px] font-medium text-slate-500 truncate w-full">summer-promo-004.pdf</span>
+</div>
+<div class="flex flex-col items-center gap-2 text-center">
+<div class="aspect-square w-full border border-slate-100 bg-slate-50 p-2">
+<img class="w-full h-full object-contain" data-alt="black and white qr code square tile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxl3x8S4CDC0rdq2ScfjUZ3fHXjJLpxAmhJo4BrU2YA3sQiM2CQmT-bM4a3KVk1XFuzDFQ_0-jhrXrTc3flG6FvjkjjvtyNyz-2zPIJa0DwcLNTquTgAdw9hQdELnRbk95YnR2DEfGtbLLuk2cz6-TnGFUQGN-_SpBFXnfsL0fQOcq7gT2Gxx4_u7KQEhgS67Ai_Xvwt0v86XJSfdEgMUtHwChljEGHeBdL14mR3WgPM6xKP_5K3bG1Xw3dBhL-cc5812nJ5TF-yBb"/>
+</div>
+<span class="text-[10px] font-medium text-slate-500 truncate w-full">summer-promo-005.pdf</span>
+</div>
+<div class="flex flex-col items-center gap-2 text-center">
+<div class="aspect-square w-full border border-slate-100 bg-slate-50 p-2">
+<img class="w-full h-full object-contain" data-alt="dense qr code pattern for asset tracking labels" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJdNJd6GnAqkvMIpw5_Xq0uLkukAM_OlDbnoRO_v_FEqOIsrA0Nk0xXzc3C40VLAeLfLI96YbzS1R2Wok-yjavJ5Mre_pdRhkdg49rO4c4AqiGzxwZ8FMoz1mSW9NT5UNPaijw2IeG--0LQkrUE7L8Gf_tzh6sZzwzKQSOBQ91AIumY7Ma9g8vR6pitCmL3xSY_HYBPeoSpC3Q8ji5ei_z9Adh_mOStvPW4s47FsbtFk8rcuIL_JJXN9KJogaJrQIfC7HrHCxc3b99"/>
+</div>
+<span class="text-[10px] font-medium text-slate-500 truncate w-full">summer-promo-006.pdf</span>
+</div>
+<div class="flex flex-col items-center gap-2 text-center">
+<div class="aspect-square w-full border border-slate-100 bg-slate-50 p-2">
+<img class="w-full h-full object-contain" data-alt="stylized qr code with rounded edges for tech company" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyPdtEu5v5X_Pj5boR54wP_1ar3R0NfZ7XtXqJ2fuKR2vVDziWMQa1nzIritRpxqfBY1-B0-xEfeGLIIPvs84whK9Q_2ksaFPAcwfFi5uGpz9eHLAiPdF6E_hq9i1x060zBCPae6Tsk1t7sxk1Zr2T-Z_BssQt2K2qLl56uWeXwq6IKzluqRlnnNJNXI5q1GBmNprdJP5RC3m9t7fC8BIJ7v4LWDlaoJl8tPixN_2EGpJ90StaXkdkLeXrCYX2BaNgQ9AiY_vla1uC"/>
+</div>
+<span class="text-[10px] font-medium text-slate-500 truncate w-full">summer-promo-007.pdf</span>
+</div>
+<div class="flex flex-col items-center gap-2 text-center">
+<div class="aspect-square w-full border border-slate-100 bg-slate-50 p-2">
+<img class="w-full h-full object-contain" data-alt="batch generated qr code label" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGwI39n_9RORFmlTSw7Zi2aB3iiM16ENtws5BBnWZZ5uBbaxxtIK-BV3ppUotEISTzV1xUnmcV2etaNojUHiORCRNMb5HP09QgNZjl2qZCM0H0YyB5JoSpwQIaKVofpde1hurr-OuMAFTWHZaXOaXc2hWWccLNyQ8lQGrZO50eb5GSByh3HWp6VZ8k5Mqdzu1zGNSb80JKWOOgeGiny57byZyelYKhVzDPBDzIX9e5NsOS1tN3pOfZPrH-A-w8SCIAMFJ0RsVbhsT2"/>
+</div>
+<span class="text-[10px] font-medium text-slate-500 truncate w-full">summer-promo-008.pdf</span>
+</div>
+<div class="flex flex-col items-center gap-2 text-center">
+<div class="aspect-square w-full border border-slate-100 bg-slate-50 p-2">
+<img class="w-full h-full object-contain" data-alt="clean qr code graphic for marketing print" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIE2y8NuPcpDXYmQYxEQMagdmj-jNyRc0PqY-YEb-6w6ygWg1Olj-ql_xeRzuLqEysuTTwv64B7LIzMvVhAC38dJJ7OSa8BGfIoXX-SjwRd0FtHMZ3a-lG74j_VfjhKE3tQsprpV1FjDGo2-DBnxTGE1x-Q8ky2SKkTD9UW3ZrZ8Vny_wCR6oR2w6wfSjjty_2vQfuml_u41xLUWoJCYlAWUVXM9F_-T45GUZ9JXCPJ9Sab514XyXvqM0yY91Z7bCisSIowsOOeXrg"/>
+</div>
+<span class="text-[10px] font-medium text-slate-500 truncate w-full">summer-promo-009.pdf</span>
+</div>
+<div class="flex flex-col items-center gap-2 text-center">
+<div class="aspect-square w-full border border-slate-100 bg-slate-50 p-2">
+<img class="w-full h-full object-contain" data-alt="inventory tracking qr code label" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_a4noU77Wd_jfMX_4W-NIeEnparLdefx5bg1pAIkaFFDBD-SSx0rqkbhER7YfCZh1fUSn0UIbfv3NA9bBrJBc-TCcROwqtEliISwgYCQsAWRDksLgmlpnwjWe3UncJ92BdC-oKogL447wCT1FMHgfODwcpKmybYUYjxeoj1IJ5L-Y3rFc3p1WJEjOF9BplML8JDxJTEfqbKdUtLy5Zd_30A-VA2mPvo-5e20JCwPx4Pz6clpjxUbnGpnSvhSygmU11eVck_X9HHaB"/>
+</div>
+<span class="text-[10px] font-medium text-slate-500 truncate w-full">summer-promo-010.pdf</span>
+</div>
+<div class="flex flex-col items-center gap-2 text-center">
+<div class="aspect-square w-full border border-slate-100 bg-slate-50 p-2">
+<img class="w-full h-full object-contain" data-alt="promotional qr code with high contrast" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzNXZD74Qk-RHj2gXdxN8VqHkhtxNE9KhxT88EhiFZTS1THebOsue72CtVrLI_nYL1H4Rvr_rBSDkJF7f1ZIlkVbKQxpv6cIKKei-uvkbMewxRhI_lMJE9fPX5va3AXnRicu8X33yJcwbURQ2RfRs-o0v2o25CCrcw01XBXIEVOuYDCNP30y4Zmb3zC320F9KGwA7dtBP84k7VW9mBMCU46Uy2oxcy66aJf3N1ID31c-QArpac4Xuy-tFp8OYVg2FBGqXyIwPR_J5k"/>
+</div>
+<span class="text-[10px] font-medium text-slate-500 truncate w-full">summer-promo-011.pdf</span>
+</div>
+<div class="flex flex-col items-center gap-2 text-center">
+<div class="aspect-square w-full border border-slate-100 bg-slate-50 p-2">
+<img class="w-full h-full object-contain" data-alt="standard qr code tile for bulk printing" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC124YvXLgZkoJbTHOIweAqzNolE7Dlp6YA4xr5eDvqDXI0e244Adg7kXt9O85LBz2rP2cmJg4crdZVZTfTvsursINQK6RNEnpOdhlL6aBCdRjCq-DQtaznWT73613irBvD4v3pCyLbv3HbkGY9ddfdqZqQY_rZOsd3Ppzb6G1iwSkGXkTTdQ-9B_OFCwss4B8i9unYAvjGNNf83eSUZrkggZIRUABFA70Rfn9DSOIHBxkvgcQ_z_tJT_RxZaHl5gzQFg7uted-V_3v"/>
+</div>
+<span class="text-[10px] font-medium text-slate-500 truncate w-full">summer-promo-012.pdf</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Info -->
+<div class="bg-slate-50 px-xl py-sm flex items-center justify-between border-t border-slate-200">
+<span class="text-xs text-slate-500 font-medium">Page 1 of 4 (48 QR Codes Total)</span>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-slate-400 cursor-not-allowed">chevron_left</button>
+<span class="text-xs text-slate-700">1</span>
+<button class="material-symbols-outlined text-slate-600 hover:text-indigo-600">chevron_right</button>
+</div>
+<span class="text-xs text-slate-500 font-medium">Layout: Standard A4 Grid</span>
+</div>
+</div>
+</body></html>

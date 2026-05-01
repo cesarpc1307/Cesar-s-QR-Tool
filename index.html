@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>César’s QR Tool - Generador Masivo</title>
+
+    <!-- PWA & Icon Configuration -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="icono.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="manifest" href="manifest.json" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Libraries -->
+    <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#006591",
+                        "on-tertiary-container": "#ffd2be",
+                        "primary": "#3525cd",
+                        "inverse-primary": "#c3c0ff",
+                        "on-primary-fixed": "#0f0069",
+                        "on-surface": "#0b1c30",
+                        "secondary-fixed-dim": "#89ceff",
+                        "tertiary-container": "#a44100",
+                        "on-tertiary-fixed": "#351000",
+                        "surface-variant": "#d3e4fe",
+                        "secondary-container": "#39b8fd",
+                        "on-primary-container": "#dad7ff",
+                        "on-secondary-fixed-variant": "#004c6e",
+                        "on-background": "#0b1c30",
+                        "on-secondary-fixed": "#001e2f",
+                        "outline": "#777587",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#d3e4fe",
+                        "primary-fixed": "#e2dfff",
+                        "inverse-surface": "#213145",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#7e3000",
+                        "on-tertiary-fixed-variant": "#7b2f00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#004666",
+                        "primary-container": "#4f46e5",
+                        "tertiary-fixed-dim": "#ffb695",
+                        "surface-bright": "#f8f9ff",
+                        "on-surface-variant": "#464555",
+                        "surface": "#f8f9ff",
+                        "surface-container": "#e5eeff",
+                        "surface-container-low": "#eff4ff",
+                        "surface-container-high": "#dce9ff",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "tertiary-fixed": "#ffdbcc",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#c9e6ff",
+                        "background": "#f8f9ff",
+                        "surface-dim": "#cbdbf5",
+                        "surface-tint": "#4d44e3",
+                        "outline-variant": "#c7c4d8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sm": "12px",
+                        "md": "16px",
+                        "gutter": "20px",
+                        "xs": "4px",
+                        "base": "8px",
+                        "xl": "32px",
+                        "margin": "24px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "display-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "title-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-md": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "title-md": ["18px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        body {
+            background-color: #F8FAFC;
+        }
+
+        /* --- Color Swatches --- */
+        .color-swatch-input {
+            width: 40px;
+            height: 40px;
+            min-height: 40px;
+            padding: 0;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: none;
+            flex-shrink: 0;
+        }
+
+        .color-swatch-input::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        .color-swatch-input::-webkit-color-swatch {
+            border: 1px solid #E2E8F0;
+            border-radius: 6px;
+        }
+
+        /* --- Sidebar Tab Buttons --- */
+        .tab-btn {
+            min-height: 44px;
+        }
+
+        .tab-btn.active {
+            background-color: #ffffff;
+            color: #3525cd;
+            border-color: #c7c4d8;
+            font-weight: 600;
+        }
+
+        .tab-btn.active .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1;
+        }
+
+        .fill-1 {
+            font-variation-settings: 'FILL' 1;
+        }
+
+        /* --- Custom Scrollbar --- */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* --- Mobile: ensure touch-friendly min heights --- */
+        button,
+        select,
+        input[type="text"],
+        input[type="email"],
+        textarea,
+        label[for] {
+            touch-action: manipulation;
+        }
+
+        /* Gallery grid: fluid on mobile, respects printColumns on md+ */
+        .qr-gallery-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        @media (min-width: 640px) {
+            .qr-gallery-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        /* On md+ the inline style takes over via JS */
+        @media (min-width: 768px) {
+            .qr-gallery-grid {
+                grid-template-columns: unset;
+                /* will be set by inline style */
+            }
+        }
+
+        /* --- Mobile layout: stacked panels --- */
+        /* Mobile view switcher tabs (Config / Preview) */
+        .mobile-view-tabs {
+            display: flex;
+        }
+
+        @media (min-width: 768px) {
+            .mobile-view-tabs {
+                display: none;
+            }
+        }
+
+        /* Mobile panel visibility */
+        .mobile-panel {
+            display: none;
+        }
+
+        .mobile-panel.active {
+            display: block;
+        }
+
+        @media (min-width: 768px) {
+            .mobile-panel {
+                display: block !important;
+            }
+        }
+
+        /* Hide desktop sidebar on mobile */
+        @media (max-width: 767px) {
+            .desktop-sidebar {
+                display: none !important;
+            }
+
+            /* Main content panel takes full width on mobile */
+            .main-content-area {
+                padding: 0 !important;
+            }
+        }
+
+        /* Mobile: hide the result panel header column selector (use simplified version) */
+        @media (max-width: 767px) {
+            .results-col-desktop {
+                display: none;
+            }
+        }
+
+        /* Safe area for iPhones with home bar */
+        .safe-area-inset-bottom {
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        /* --- Print Styles --- */
+        @media print {
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+                overflow: visible !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .print-area {
+                display: block !important;
+                position: static;
+                width: 100%;
+                top: 0;
+                left: 0;
+                height: auto;
+                overflow: visible;
+            }
+
+            .print-grid {
+                display: grid;
+                gap: 8px;
+                width: 100%;
+                align-items: start;
+            }
+
+            .print-item {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                display: flex !important;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                width: 100% !important;
+                min-width: 0 !important;
+                max-width: 100% !important;
+                flex-shrink: 1 !important;
+                box-sizing: border-box;
+                padding: 6px !important;
+                border-radius: 8px !important;
+            }
+
+            .print-item>div:first-child {
+                width: 100% !important;
+                aspect-ratio: 1 / 1;
+            }
+
+            .print-item img {
+                width: 100% !important;
+                height: auto !important;
+                max-width: 100% !important;
+                display: block;
+            }
+
+            .snap-start,
+            .flex-shrink-0 {
+                flex-shrink: 1 !important;
+                width: 100% !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 10mm;
+            }
+        }
+    </style>
+</head>
+
+<body class="font-body-md text-on-background">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const TAB_DATOS = 'datos';
+        const TAB_DIMENSIONES = 'dimensiones';
+        const TAB_FORMAS = 'formas';
+        const TAB_COLORES = 'colores';
+        const TAB_LOGO = 'logo';
+
+        const MaterialIcon = ({ name, className = "" }) => (
+            <span className={`material-symbols-outlined ${className}`}>{name}</span>
+        );
+
+        const QRCodeItem = ({ line, logoUrl, qrColor, qrColor2, bgColor, fillType, dotStyle, eyeFrameStyle, eyePupilStyle, eyeFrameColor, showLabel, isTransparent, qrSize, quietZone, errorLevel }) => {
+            const [imgSrc, setImgSrc] = useState(null);
+            const [isHovered, setIsHovered] = useState(false);
+
+            const firstSpace = line.trim().indexOf(' ');
+            const url = firstSpace === -1 ? line.trim() : line.trim().substring(0, firstSpace);
+            const labelContent = firstSpace === -1 ? "" : line.trim().substring(firstSpace + 1);
+
+            useEffect(() => {
+                if (!url) return;
+                try {
+                    const options = {
+                        width: qrSize || 512,
+                        height: qrSize || 512,
+                        data: url,
+                        image: logoUrl,
+                        qrOptions: { errorCorrectionLevel: errorLevel || 'M' },
+                        dotsOptions: {
+                            type: dotStyle,
+                            color: fillType === 'solid' ? qrColor : undefined,
+                            gradient: fillType === 'gradient' ? {
+                                type: 'linear',
+                                rotation: Math.PI / 4,
+                                colorStops: [{ offset: 0, color: qrColor }, { offset: 1, color: qrColor2 }]
+                            } : undefined
+                        },
+                        backgroundOptions: { color: isTransparent ? 'rgba(0,0,0,0)' : bgColor },
+                        cornersSquareOptions: { type: eyeFrameStyle || 'square', color: eyeFrameColor || qrColor },
+                        cornersDotOptions: { type: eyePupilStyle || 'square', color: eyeFrameColor || qrColor },
+                        imageOptions: { crossOrigin: "anonymous", margin: quietZone === 'compact' ? 2 : 10 }
+                    };
+
+                    const qr = new window.QRCodeStyling(options);
+                    qr.getRawData("png").then(blob => {
+                        const blobUrl = URL.createObjectURL(blob);
+                        setImgSrc(blobUrl);
+                    });
+                } catch (e) {
+                    console.error("Error creating QR Code item:", e);
+                }
+            }, [url, logoUrl, qrColor, qrColor2, bgColor, fillType, dotStyle, eyeFrameStyle, eyePupilStyle, eyeFrameColor, isTransparent, qrSize, quietZone, errorLevel]);
+
+            const handleDownload = () => {
+                if (imgSrc) {
+                    const link = document.createElement('a');
+                    link.href = imgSrc;
+                    link.download = `qr_${labelContent || 'code'}.png`;
+                    link.click();
+                }
+            };
+
+            return (
+                <div
+                    className="print-item group relative bg-white border border-slate-200 p-4 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col items-center gap-3 w-full flex-shrink-0"
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                >
+                    <div className="relative w-full aspect-square bg-slate-50 rounded-2xl overflow-hidden flex items-center justify-center p-2">
+                        {imgSrc ? (
+                            <img src={imgSrc} className="w-full h-full object-contain" alt="QR Code" />
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center"><MaterialIcon name="sync" className="animate-spin text-slate-300" /></div>
+                        )}
+
+                        {/* Centered Download Button on Hover */}
+                        <div className={`absolute inset-0 bg-white/20 backdrop-blur-[2px] flex items-center justify-center transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+                            <button
+                                onClick={handleDownload}
+                                className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-primary hover:scale-110 active:scale-95 transition-transform"
+                            >
+                                <MaterialIcon name="download" className="text-[24px]" />
+                            </button>
+                        </div>
+                    </div>
+                    {/* Label Area */}
+                    {showLabel && labelContent && (
+                        <div className="text-center w-full px-1">
+                            <p className="text-xs font-semibold text-slate-700 mt-0.5 truncate">{labelContent}</p>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [activeTab, setActiveTab] = useState(TAB_DATOS);
+            // 'config' | 'preview' — controls which panel is visible on mobile
+            const [mobileView, setMobileView] = useState('config');
+            const [bulkText, setBulkText] = useState("https://github.com/cesarpc1307/Cesar-s-QR-Tool\nhttps://example.com");
+            const [appliedBulkText, setAppliedBulkText] = useState("https://github.com/cesarpc1307/Cesar-s-QR-Tool\nhttps://example.com");
+            const [dotStyle, setDotStyle] = useState('square');
+            const [eyeFrameStyle, setEyeFrameStyle] = useState('square');
+            const [eyePupilStyle, setEyePupilStyle] = useState('square');
+            const [eyeFrameColor, setEyeFrameColor] = useState('#3525cd');
+
+            const [fillType, setFillType] = useState('solid');
+            const [qrColor, setQrColor] = useState('#3525cd');
+            const [qrColor2, setQrColor2] = useState('#39b8fd');
+            const [bgColor, setBgColor] = useState('#ffffff');
+
+            const [logoUrl, setLogoUrl] = useState(null);
+            const [showLabel, setShowLabel] = useState(true);
+            const [appliedShowLabel, setAppliedShowLabel] = useState(true);
+            const [isTransparent, setIsTransparent] = useState(false);
+            const [printColumns, setPrintColumns] = useState(4);
+            const [qrSize, setQrSize] = useState(300);
+            const [quietZone, setQuietZone] = useState('standard');
+            const [errorLevel, setErrorLevel] = useState('M');
+
+            const qrRef = useRef(null);
+            const qrCodeGenerator = useRef(null);
+
+            useEffect(() => {
+                try {
+                    const lines = bulkText.split('\n').filter(l => l.trim() !== '');
+                    let firstUrl = 'https://qrstudiopro.io';
+                    if (lines.length > 0) {
+                        const firstLine = lines[0].trim();
+                        const spaceIdx = firstLine.indexOf(' ');
+                        firstUrl = spaceIdx === -1 ? firstLine : firstLine.substring(0, spaceIdx);
+                    }
+
+                    const opts = {
+                        width: 256,
+                        height: 256,
+                        type: "svg",
+                        data: firstUrl,
+                        image: logoUrl,
+                        qrOptions: { errorCorrectionLevel: errorLevel },
+                        dotsOptions: {
+                            type: dotStyle,
+                            color: fillType === 'solid' ? qrColor : undefined,
+                            gradient: fillType === 'gradient' ? {
+                                type: 'linear',
+                                rotation: Math.PI / 4,
+                                colorStops: [{ offset: 0, color: qrColor }, { offset: 1, color: qrColor2 }]
+                            } : undefined
+                        },
+                        backgroundOptions: { color: isTransparent ? 'rgba(0,0,0,0)' : bgColor },
+                        cornersSquareOptions: { type: eyeFrameStyle, color: eyeFrameColor },
+                        cornersDotOptions: { type: eyePupilStyle, color: eyeFrameColor },
+                        imageOptions: { crossOrigin: "anonymous", margin: quietZone === 'compact' ? 2 : 5 }
+                    };
+
+                    qrCodeGenerator.current = new window.QRCodeStyling(opts);
+
+                    if (qrRef.current) {
+                        qrRef.current.innerHTML = '';
+                        qrCodeGenerator.current.append(qrRef.current);
+                    }
+                } catch (e) {
+                    console.error("Preview render error:", e);
+                }
+            }, [bulkText, dotStyle, eyeFrameStyle, eyePupilStyle, eyeFrameColor, qrColor, qrColor2, bgColor, fillType, logoUrl, isTransparent, quietZone, errorLevel]);
+
+            const handleLogoUpload = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => setLogoUrl(event.target.result);
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            const downloadAllZip = async () => {
+                if (bulkText !== appliedBulkText) return;
+                try {
+                    const lines = appliedBulkText.split('\n').filter(l => l.trim() !== '');
+                    if (lines.length === 0) return alert('Por favor, ingresa al menos un dato válido.');
+
+                    const zip = new window.JSZip();
+                    const folder = zip.folder("codigos_qr");
+
+                    const baseOptions = {
+                        width: qrSize,
+                        height: qrSize,
+                        image: logoUrl,
+                        qrOptions: { errorCorrectionLevel: errorLevel },
+                        dotsOptions: {
+                            type: dotStyle,
+                            color: fillType === 'solid' ? qrColor : undefined,
+                            gradient: fillType === 'gradient' ? {
+                                type: 'linear',
+                                rotation: Math.PI / 4,
+                                colorStops: [{ offset: 0, color: qrColor }, { offset: 1, color: qrColor2 }]
+                            } : undefined
+                        },
+                        backgroundOptions: { color: isTransparent ? 'rgba(0,0,0,0)' : bgColor },
+                        cornersSquareOptions: { type: eyeFrameStyle, color: eyeFrameColor },
+                        cornersDotOptions: { type: eyePupilStyle, color: eyeFrameColor },
+                        imageOptions: { crossOrigin: "anonymous", margin: quietZone === 'compact' ? 2 : 10 }
+                    };
+
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        const spaceIdx = line.indexOf(' ');
+                        const url = spaceIdx === -1 ? line : line.substring(0, spaceIdx);
+                        const tempLabel = spaceIdx === -1 ? `qr_code_${i + 1}` : line.substring(spaceIdx + 1);
+                        const safeLabel = tempLabel.replace(/[^a-zA-Z0-9]/gi, '_').substring(0, 30);
+
+                        const qr = new window.QRCodeStyling({
+                            ...baseOptions,
+                            data: url
+                        });
+
+                        const blob = await qr.getRawData("png");
+                        folder.file(`${i + 1}_${safeLabel}.png`, blob);
+                    }
+
+                    const zipBlob = await zip.generateAsync({ type: "blob" });
+                    window.saveAs(zipBlob, `codigos_qr_${new Date().getTime()}.zip`);
+                } catch (e) {
+                    console.error("Zip download error:", e);
+                    alert("Error generando ZIP: " + e.message);
+                }
+            };
+
+            const printAll = () => {
+                if (bulkText !== appliedBulkText) return;
+                const lines = appliedBulkText.split('\n').filter(l => l.trim() !== '');
+                if (lines.length === 0) return alert('Por favor, ingresa al menos un dato valido.');
+                setTimeout(() => window.print(), 500);
+            };
+
+            const isDirty = bulkText !== appliedBulkText || showLabel !== appliedShowLabel;
+
+            const renderSidebarItem = (id, icon, label) => (
+                <button
+                    className={`tab-btn flex items-center gap-3 px-3 py-2 rounded-md transition-all border border-transparent ${activeTab === id ? 'active shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+                    onClick={() => setActiveTab(id)}
+                >
+                    <MaterialIcon name={icon} className="text-[20px]" />
+                    <span className="font-medium text-sm">{label}</span>
+                </button>
+            );
+
+            return (
+                <React.Fragment>
+                    {/* ===== MAIN APP SHELL (no-print) ===== */}
+                    <div className="flex flex-col no-print" style={{ height: '100dvh', overflow: 'hidden' }}>
+
+                        {/* ── TOP HEADER ── */}
+                        <header className="bg-white flex items-center justify-between px-4 md:px-8 w-full h-14 md:h-16 border-b border-slate-200 z-50 flex-shrink-0">
+                            <div className="flex items-center gap-4 md:gap-8">
+                                <h1 className="text-lg md:text-xl font-bold tracking-tight text-indigo-600">César's QR Tool</h1>
+                                <nav className="hidden md:flex items-center gap-6 h-16">
+                                    <a className="text-indigo-600 font-semibold border-b-2 border-indigo-600 h-16 flex items-center pt-1" href="#">Generador</a>
+                                    <a className="text-slate-500 hover:text-indigo-600 transition-colors h-16 flex items-center" href="#">My Codes</a>
+                                    <a className="text-slate-500 hover:text-indigo-600 transition-colors h-16 flex items-center" href="#">Templates</a>
+                                </nav>
+                            </div>
+                            <div className="flex items-center gap-2 md:gap-4 text-slate-500">
+                                <button className="w-11 h-11 flex items-center justify-center rounded-lg hover:text-indigo-600 hover:bg-slate-100 active:scale-95 transition-all">
+                                    <MaterialIcon name="settings" />
+                                </button>
+                                <button className="w-11 h-11 hidden md:flex items-center justify-center rounded-lg hover:text-indigo-600 hover:bg-slate-100 active:scale-95 transition-all">
+                                    <MaterialIcon name="help" />
+                                </button>
+                                <button className="w-11 h-11 flex items-center justify-center rounded-lg hover:text-indigo-600 hover:bg-slate-100 active:scale-95 transition-all">
+                                    <MaterialIcon name="account_circle" />
+                                </button>
+                            </div>
+                        </header>
+
+                        {/* ── MOBILE VIEW SWITCHER (Config / Preview) ── */}
+                        <div className="mobile-view-tabs bg-white border-b border-slate-200 flex-shrink-0">
+                            <button
+                                onClick={() => setMobileView('config')}
+                                className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold border-b-2 transition-colors ${mobileView === 'config'
+                                    ? 'border-indigo-600 text-indigo-600'
+                                    : 'border-transparent text-slate-500'
+                                    }`}
+                            >
+                                <MaterialIcon name="tune" className="text-[20px]" />
+                                Configurar
+                            </button>
+                            <button
+                                onClick={() => setMobileView('preview')}
+                                className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold border-b-2 transition-colors ${mobileView === 'preview'
+                                    ? 'border-indigo-600 text-indigo-600'
+                                    : 'border-transparent text-slate-500'
+                                    }`}
+                            >
+                                <MaterialIcon name="grid_view" className="text-[20px]" />
+                                Vista Previa
+                                {isDirty && <span className="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0"></span>}
+                            </button>
+                        </div>
+
+                        {/* ── BODY: SIDEBAR + MAIN ── */}
+                        <div className="flex flex-grow overflow-hidden">
+
+                            {/* ── DESKTOP SIDEBAR ── */}
+                            <aside className="desktop-sidebar bg-slate-50 flex flex-col h-full p-4 gap-2 w-64 border-r border-slate-200 flex-shrink-0">
+                                <div className="mb-4 px-3">
+                                    <h2 className="text-lg font-bold text-slate-900">Configuración</h2>
+                                    <p className="text-xs text-slate-500">Opciones del QR</p>
+                                </div>
+                                <nav className="flex flex-col gap-1 flex-grow overflow-y-auto custom-scrollbar">
+                                    {renderSidebarItem(TAB_DATOS, 'link', 'Contenido')}
+                                    {renderSidebarItem(TAB_DIMENSIONES, 'aspect_ratio', 'Dimensiones')}
+                                    {renderSidebarItem(TAB_FORMAS, 'grid_view', 'Diseño')}
+                                    {renderSidebarItem(TAB_COLORES, 'palette', 'Colores')}
+                                    {renderSidebarItem(TAB_LOGO, 'add_photo_alternate', 'Logo')}
+                                </nav>
+
+                                <div className="px-3 py-4 border-t border-slate-100 mt-2 space-y-2">
+                                    <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
+                                        © {new Date().getFullYear()} César's QR Tool. <br />Todos los derechos reservados.
+                                    </p>
+                                    <a
+                                        href="https://github.com/cesarpc1307"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block text-[10px] text-indigo-600 font-bold hover:underline"
+                                    >
+                                        Desarrollado por Ing. César Pineda | Honduras
+                                    </a>
+                                </div>
+
+                                <button
+                                    onClick={() => {
+                                        setAppliedBulkText(bulkText);
+                                        setAppliedShowLabel(showLabel);
+                                    }}
+                                    className={`w-full py-3 rounded-lg font-bold text-sm transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 ${isDirty ? 'bg-indigo-600 text-white hover:bg-indigo-700' : 'bg-slate-200 text-slate-500 cursor-default'}`}
+                                >
+                                    <MaterialIcon name={isDirty ? 'sync' : 'check_circle'} className="text-[18px]" />
+                                    {isDirty ? 'Actualizar' : 'Generado'}
+                                </button>
+                            </aside>
+
+                            {/* ── MAIN CONTENT AREA ── */}
+                            <main className="flex-grow overflow-y-auto bg-[#F8FAFC] pb-16 md:pb-0">
+                                <div className="max-w-[1600px] mx-auto md:p-6 grid grid-cols-1 lg:grid-cols-12 md:gap-8 min-h-full">
+
+                                    {/* CONFIG PANEL — hidden on mobile when preview is active */}
+                                    <div className={`lg:col-span-4 space-y-6 pb-10 px-4 pt-4 md:px-0 md:pt-0 mobile-panel ${mobileView === 'config' ? 'active' : ''}`}>
+                                        {activeTab === TAB_DIMENSIONES && (
+                                            <section className="bg-white border border-outline-variant p-6 rounded-xl shadow-sm space-y-8">
+                                                <div>
+                                                    <h3 className="font-title-md text-on-surface mb-1">Tamaño de Exportación</h3>
+                                                    <p className="text-body-md text-on-surface-variant mb-4">Resolución de los archivos PNG generados.</p>
+                                                    <div className="grid grid-cols-1 gap-2">
+                                                        {[
+                                                            { px: 300, label: 'Estándar (300px)', desc: 'Para uso digital o etiquetas pequeñas.' },
+                                                            { px: 600, label: 'Alta Definición (600px)', desc: 'Para documentos impresos claros.' },
+                                                            { px: 1000, label: 'Imprenta Profesional (1000px)', desc: 'Para posters o lonas grandes.' }
+                                                        ].map(({ px, label, desc }) => (
+                                                            <button
+                                                                key={px}
+                                                                onClick={() => setQrSize(px)}
+                                                                className={`flex items-center gap-3 p-3 rounded-xl border text-left transition-colors ${qrSize === px ? 'border-2 border-primary bg-primary/5' : 'border-outline-variant hover:border-primary/50'}`}
+                                                            >
+                                                                <span className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${qrSize === px ? 'bg-primary text-white' : 'bg-slate-100 text-slate-500'}`}>{px === 300 ? 'S' : px === 600 ? 'M' : 'L'}</span>
+                                                                <div>
+                                                                    <p className={`text-sm font-semibold ${qrSize === px ? 'text-primary' : 'text-slate-700'}`}>{label}</p>
+                                                                    <p className="text-[11px] text-slate-500 mt-0.5">{desc}</p>
+                                                                </div>
+                                                                {qrSize === px && <MaterialIcon name="check_circle" className="ml-auto text-primary fill-1" />}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                <div className="border-t border-outline-variant pt-6">
+                                                    <h3 className="font-title-md text-on-surface mb-1">Margen de Seguridad</h3>
+                                                    <p className="text-body-md text-on-surface-variant mb-4">Espacio en blanco alrededor del código.</p>
+                                                    <div className="grid grid-cols-2 gap-3">
+                                                        {[
+                                                            { val: 'standard', icon: 'border_outer', label: 'Estándar', desc: 'Garantiza lectura en cualquier fondo.' },
+                                                            { val: 'compact', icon: 'border_inner', label: 'Compacto', desc: 'Mínimo espacio, para diseños ajustados.' }
+                                                        ].map(({ val, icon, label, desc }) => (
+                                                            <button
+                                                                key={val}
+                                                                onClick={() => setQuietZone(val)}
+                                                                className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-colors ${quietZone === val ? 'border-2 border-primary bg-primary/5' : 'border-outline-variant hover:border-primary/50'}`}
+                                                            >
+                                                                <MaterialIcon name={icon} className={quietZone === val ? 'text-primary' : 'text-slate-400'} />
+                                                                <span className={`text-sm font-semibold ${quietZone === val ? 'text-primary' : 'text-slate-700'}`}>{label}</span>
+                                                                <span className="text-[10px] text-slate-500 text-center leading-tight">{desc}</span>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                <div className="border-t border-outline-variant pt-6">
+                                                    <h3 className="font-title-md text-on-surface mb-1">Columnas de Impresión</h3>
+                                                    <p className="text-body-md text-on-surface-variant mb-4">Organización de códigos en la hoja.</p>
+                                                    <div className="grid grid-cols-3 gap-2">
+                                                        {[
+                                                            { cols: 2, icon: 'view_column', label: '2 Cols', desc: 'Señalización' },
+                                                            { cols: 4, icon: 'grid_view', label: '4 Cols', desc: 'Predeterminado' },
+                                                            { cols: 6, icon: 'apps', label: '6 Cols', desc: 'Etiquetas' }
+                                                        ].map(({ cols, icon, label, desc }) => (
+                                                            <button
+                                                                key={cols}
+                                                                onClick={() => setPrintColumns(cols)}
+                                                                className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-colors ${printColumns === cols ? 'border-2 border-primary bg-primary/5' : 'border-outline-variant hover:border-primary/50'}`}
+                                                            >
+                                                                <MaterialIcon name={icon} className={printColumns === cols ? 'text-primary' : 'text-slate-400'} />
+                                                                <span className={`text-xs font-bold ${printColumns === cols ? 'text-primary' : 'text-slate-700'}`}>{label}</span>
+                                                                <span className="text-[10px] text-slate-500">{desc}</span>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                <div className="border-t border-outline-variant pt-6">
+                                                    <h3 className="font-title-md text-on-surface mb-1">Resiliencia del Código</h3>
+                                                    <p className="text-body-md text-on-surface-variant mb-4">Nivel de corrección de errores.</p>
+                                                    <div className="grid grid-cols-2 gap-3">
+                                                        {[
+                                                            { lvl: 'M', icon: 'balance', label: 'Nivel Medio (M)', desc: 'Equilibrio perfecto entre diseño y lectura.' },
+                                                            { lvl: 'H', icon: 'shield', label: 'Nivel Alto (H)', desc: 'Recomendado con logo grande en el centro.' }
+                                                        ].map(({ lvl, icon, label, desc }) => (
+                                                            <button
+                                                                key={lvl}
+                                                                onClick={() => setErrorLevel(lvl)}
+                                                                className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-colors ${errorLevel === lvl ? 'border-2 border-primary bg-primary/5' : 'border-outline-variant hover:border-primary/50'}`}
+                                                            >
+                                                                <MaterialIcon name={icon} className={errorLevel === lvl ? 'text-primary' : 'text-slate-400'} />
+                                                                <span className={`text-sm font-semibold ${errorLevel === lvl ? 'text-primary' : 'text-slate-700'}`}>{label}</span>
+                                                                <span className="text-[10px] text-slate-500 text-center leading-tight">{desc}</span>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        )}
+
+                                        {activeTab === TAB_DATOS && (
+                                            <section className="bg-white border border-outline-variant p-4 md:p-6 rounded-xl shadow-sm">
+                                                <div className="mb-4">
+                                                    <h3 className="font-title-md text-on-surface">Contenido</h3>
+                                                    <p className="text-body-md text-on-surface-variant">El destino de tu código QR al ser escaneado.</p>
+                                                </div>
+                                                <textarea
+                                                    className="w-full h-48 md:h-72 px-md py-base border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all font-mono text-sm leading-relaxed whitespace-pre-wrap"
+                                                    placeholder={"https://example.com/url-1 Mi Etiqueta 1\nhttps://example.com/url-2 SinEtiqueta"}
+                                                    value={bulkText}
+                                                    onChange={(e) => setBulkText(e.target.value)}
+                                                ></textarea>
+
+                                                <div className="mt-6 pt-4 border-t border-slate-100">
+                                                    <label className="flex items-center gap-3 cursor-pointer group min-h-[44px]">
+                                                        <input
+                                                            type="checkbox"
+                                                            className="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary transition-all cursor-pointer flex-shrink-0"
+                                                            checked={showLabel}
+                                                            onChange={(e) => setShowLabel(e.target.checked)}
+                                                        />
+                                                        <div>
+                                                            <span className="text-sm font-semibold text-slate-700 group-hover:text-primary transition-colors">Mostrar Etiqueta</span>
+                                                            <p className="text-[11px] text-slate-500 mt-0.5">Si se activa, el texto después del espacio en cada línea se mostrará debajo del QR.</p>
+                                                        </div>
+                                                    </label>
+                                                </div>
+
+                                                {/* Mobile: Actualizar button inside config panel */}
+                                                <div className="mt-4 md:hidden">
+                                                    <button
+                                                        onClick={() => {
+                                                            setAppliedBulkText(bulkText);
+                                                            setAppliedShowLabel(showLabel);
+                                                            setMobileView('preview');
+                                                        }}
+                                                        className={`w-full py-3 rounded-xl font-bold text-sm transition-all active:scale-95 flex items-center justify-center gap-2 ${isDirty ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg' : 'bg-slate-200 text-slate-500 cursor-default'}`}
+                                                    >
+                                                        <MaterialIcon name={isDirty ? 'sync' : 'check_circle'} className="text-[18px]" />
+                                                        {isDirty ? 'Generar QRs' : 'QRs al día'}
+                                                    </button>
+                                                </div>
+                                            </section>
+                                        )}
+
+                                        {activeTab === TAB_FORMAS && (
+                                            <section className="bg-white border border-outline-variant p-6 rounded-xl shadow-sm space-y-8">
+
+                                                {/* --- Body Style --- */}
+                                                <div>
+                                                    <h3 className="font-title-md text-on-surface mb-1">Estilo del Cuerpo</h3>
+                                                    <p className="text-body-md text-on-surface-variant mb-4">El patrón principal de los puntos del QR.</p>
+                                                    <div className="grid grid-cols-1 gap-2">
+                                                        {[
+                                                            { s: 'square', i: 'grid_4x4', label: 'Clásico', desc: 'Cuadrados estándar. Máxima compatibilidad.' },
+                                                            { s: 'dots', i: 'lens', label: 'Moderno', desc: 'Puntos circulares. Estilo contemporáneo.' },
+                                                            { s: 'classy', i: 'auto_awesome', label: 'Elegante', desc: 'Formas suavizadas. Ideal para eventos y diseño premium.' },
+                                                            { s: 'rounded', i: 'apps', label: 'Redondeado', desc: 'Cuadrados con bordes suaves.' },
+                                                            { s: 'extra-rounded', i: 'motion_photos_on', label: 'Fluido', desc: 'Bordes extra redondeados y orgánicos.' },
+                                                        ].map(({ s, i, label, desc }) => (
+                                                            <button
+                                                                key={s}
+                                                                onClick={() => setDotStyle(s)}
+                                                                className={`flex items-center gap-3 p-3 rounded-xl border text-left transition-colors ${dotStyle === s ? 'border-2 border-primary bg-primary/5' : 'border-outline-variant hover:border-primary/50'}`}
+                                                            >
+                                                                <MaterialIcon name={i} className={`flex-shrink-0 ${dotStyle === s ? 'text-primary' : 'text-slate-400'}`} />
+                                                                <div>
+                                                                    <p className={`text-sm font-semibold ${dotStyle === s ? 'text-primary' : 'text-slate-700'}`}>{label}</p>
+                                                                    <p className="text-[11px] text-slate-500 mt-0.5">{desc}</p>
+                                                                </div>
+                                                                {dotStyle === s && <MaterialIcon name="check_circle" className="ml-auto text-primary" />}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                {/* --- Corner Frame --- */}
+                                                <div className="border-t border-outline-variant pt-6">
+                                                    <h3 className="font-title-md text-on-surface mb-1">Marco de Esquinas</h3>
+                                                    <p className="text-body-md text-on-surface-variant mb-4">El borde exterior de los 3 ojos del QR.</p>
+                                                    <div className="grid grid-cols-3 gap-2">
+                                                        {[
+                                                            { s: 'square', i: 'square', label: 'Cuadrado' },
+                                                            { s: 'extra-rounded', i: 'rounded_corner', label: 'Redondeado' },
+                                                            { s: 'dot', i: 'radio_button_unchecked', label: 'Extra Redondo' },
+                                                        ].map(({ s, i, label }) => (
+                                                            <button
+                                                                key={s}
+                                                                onClick={() => setEyeFrameStyle(s)}
+                                                                className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-colors ${eyeFrameStyle === s ? 'border-2 border-primary bg-primary/5' : 'border-outline-variant hover:border-primary/50'}`}
+                                                            >
+                                                                <MaterialIcon name={i} className={eyeFrameStyle === s ? 'text-primary' : 'text-slate-400'} />
+                                                                <span className={`text-[11px] font-medium ${eyeFrameStyle === s ? 'text-primary' : 'text-slate-600'}`}>{label}</span>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                {/* --- Corner Pupil --- */}
+                                                <div className="border-t border-outline-variant pt-6">
+                                                    <h3 className="font-title-md text-on-surface mb-1">Pupila de Esquinas</h3>
+                                                    <p className="text-body-md text-on-surface-variant mb-4">El punto interior de los 3 ojos del QR.</p>
+                                                    <div className="grid grid-cols-3 gap-2">
+                                                        {[
+                                                            { s: 'square', i: 'stop', label: 'Cuadrado' },
+                                                            { s: 'dot', i: 'circle', label: 'Redondo' },
+                                                        ].map(({ s, i, label }) => (
+                                                            <button
+                                                                key={s}
+                                                                onClick={() => setEyePupilStyle(s)}
+                                                                className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-colors ${eyePupilStyle === s ? 'border-2 border-primary bg-primary/5' : 'border-outline-variant hover:border-primary/50'}`}
+                                                            >
+                                                                <MaterialIcon name={i} className={eyePupilStyle === s ? 'text-primary' : 'text-slate-400'} />
+                                                                <span className={`text-[11px] font-medium ${eyePupilStyle === s ? 'text-primary' : 'text-slate-600'}`}>{label}</span>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                {/* --- Corner Color + Sync --- */}
+                                                <div className="border-t border-outline-variant pt-6">
+                                                    <div className="flex items-center justify-between mb-3">
+                                                        <div>
+                                                            <h3 className="font-title-md text-on-surface">Color Independiente</h3>
+                                                            <p className="text-body-md text-on-surface-variant">Color exclusivo para los ojos del QR.</p>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => {
+                                                                setEyeFrameStyle('dot');
+                                                                setEyePupilStyle('dot');
+                                                            }}
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-primary/40 text-primary text-xs font-semibold hover:bg-primary/5 transition-colors"
+                                                            title="Redondea las esquinas automáticamente para logos circulares"
+                                                        >
+                                                            <MaterialIcon name="sync" className="text-[16px]" />
+                                                            Sincronizar con Logo
+                                                        </button>
+                                                    </div>
+                                                    <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                                        <input
+                                                            className="color-swatch-input"
+                                                            type="color"
+                                                            value={eyeFrameColor}
+                                                            onChange={(e) => setEyeFrameColor(e.target.value)}
+                                                        />
+                                                        <div>
+                                                            <p className="text-sm font-mono text-on-surface-variant uppercase">{eyeFrameColor}</p>
+                                                            <p className="text-[10px] text-slate-400 mt-0.5">Aplica a marco y pupila</p>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => setEyeFrameColor(qrColor)}
+                                                            className="ml-auto text-[10px] text-primary font-semibold hover:underline"
+                                                        >
+                                                            Igualar al cuerpo
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                            </section>
+                                        )}
+
+                                        {activeTab === TAB_COLORES && (
+                                            <section className="bg-white border border-outline-variant p-6 rounded-xl shadow-sm space-y-6">
+                                                <div>
+                                                    <div className="flex items-center justify-between mb-4">
+                                                        <h3 className="font-title-md text-on-surface">Relleno del QR</h3>
+                                                        <div className="flex bg-slate-100 p-1 rounded-lg">
+                                                            <button
+                                                                className={`px-3 py-1 font-medium text-xs rounded-md transition-all ${fillType === 'solid' ? 'bg-white shadow text-primary' : 'text-slate-500'}`}
+                                                                onClick={() => setFillType('solid')}
+                                                            >Sólido</button>
+                                                            <button
+                                                                className={`px-3 py-1 font-medium text-xs rounded-md transition-all ${fillType === 'gradient' ? 'bg-white shadow text-primary' : 'text-slate-500'}`}
+                                                                onClick={() => setFillType('gradient')}
+                                                            >Degradado</button>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-col gap-4">
+                                                        <label className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{fillType === 'gradient' ? 'Primario' : 'Frontal'}</label>
+                                                        <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                                            <input className="color-swatch-input" type="color" value={qrColor} onChange={(e) => setQrColor(e.target.value)} />
+                                                            <span className="text-sm font-mono text-on-surface-variant uppercase">{qrColor}</span>
+                                                        </div>
+
+                                                        {fillType === 'gradient' && (
+                                                            <React.Fragment>
+                                                                <label className="text-xs font-semibold text-slate-500 uppercase tracking-widest mt-2">Secundario</label>
+                                                                <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                                                    <input className="color-swatch-input" type="color" value={qrColor2} onChange={(e) => setQrColor2(e.target.value)} />
+                                                                    <span className="text-sm font-mono text-on-surface-variant uppercase">{qrColor2}</span>
+                                                                </div>
+                                                            </React.Fragment>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                <div className="border-t border-outline-variant pt-6">
+                                                    <div className="flex items-center justify-between mb-3">
+                                                        <h3 className="font-title-md text-on-surface">Color Fondo</h3>
+                                                        <label className="flex items-center gap-2 cursor-pointer group">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary transition-all"
+                                                                checked={isTransparent}
+                                                                onChange={(e) => setIsTransparent(e.target.checked)}
+                                                            />
+                                                            <span className="text-xs font-semibold text-slate-500 uppercase tracking-widest group-hover:text-primary transition-colors">Transparente</span>
+                                                        </label>
+                                                    </div>
+                                                    <div className={`flex flex-col gap-4 transition-opacity duration-300 ${isTransparent ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
+                                                        <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                                            <input className="color-swatch-input" type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} disabled={isTransparent} />
+                                                            <span className="text-sm font-mono text-on-surface-variant uppercase">{bgColor}</span>
+                                                        </div>
+                                                        <div className="flex gap-3 mt-1">
+                                                            {['#ffffff', '#f8fafc', '#fefce8', '#f0fdf4'].map(preset => (
+                                                                <button key={preset} onClick={() => setBgColor(preset)} disabled={isTransparent} className="w-8 h-8 rounded-full border border-slate-300 hover:scale-110 transition-transform shadow-sm" style={{ backgroundColor: preset }} title={preset}></button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        )}
+
+                                        {activeTab === TAB_LOGO && (
+                                            <section className="bg-white border border-outline-variant p-6 rounded-xl shadow-sm">
+                                                <div className="mb-4">
+                                                    <h3 className="font-title-md text-on-surface">Logo</h3>
+                                                </div>
+                                                <label className="relative flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 cursor-pointer">
+                                                    <MaterialIcon name="upload" className="text-slate-400 mb-2" />
+                                                    <span className="text-sm text-slate-600 font-medium">{logoUrl ? 'Cambiar Logo' : 'Seleccionar Archivo'}</span>
+                                                    <input accept="image/*" className="hidden" type="file" onChange={handleLogoUpload} />
+                                                </label>
+                                                {logoUrl && (
+                                                    <div className="mt-4 flex flex-col items-center p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                                        <img src={logoUrl} alt="Logo" className="max-h-20 object-contain drop-shadow-sm rounded" />
+                                                        <button onClick={() => setLogoUrl(null)} className="mt-3 text-xs text-red-600 font-medium hover:underline hover:text-red-700">Quitar logo</button>
+                                                    </div>
+                                                )}
+                                            </section>
+                                        )}
+                                    </div>
+
+                                    {/* RESULTS PANEL — hidden on mobile when config is active */}
+                                    <div className={`lg:col-span-8 flex flex-col gap-6 lg:sticky lg:top-8 self-start pb-10 mobile-panel ${mobileView === 'preview' ? 'active' : ''}`}>
+                                        <div className="bg-white border border-slate-200 md:rounded-[2rem] shadow-sm overflow-hidden flex flex-col">
+                                            {/* --- Dashboard Header --- */}
+                                            <div className="px-4 md:px-8 py-4 md:py-6 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-9 h-9 md:w-10 md:h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
+                                                        <MaterialIcon name="list_alt" />
+                                                    </div>
+                                                    <h2 className="text-base md:text-lg font-bold text-slate-800">Resultados ({appliedBulkText.split('\n').filter(l => l.trim() !== '').length})</h2>
+                                                </div>
+
+                                                <div className="flex items-center gap-2 md:gap-4">
+                                                    {/* Column Selector — hidden on mobile (auto 2 cols via CSS) */}
+                                                    <div className="results-col-desktop hidden md:flex items-center gap-2 bg-slate-50 p-1 rounded-xl border border-slate-100">
+                                                        <span className="text-[10px] font-bold text-slate-400 px-2 uppercase tracking-tighter">Cols:</span>
+                                                        {[2, 3, 4, 5, 6].map(num => (
+                                                            <button
+                                                                key={num}
+                                                                onClick={() => setPrintColumns(num)}
+                                                                className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${printColumns === num ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'text-slate-500 hover:bg-slate-200'}`}
+                                                            >
+                                                                {num}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+
+                                                    {/* Quick Actions */}
+                                                    <div className="flex items-center gap-2">
+                                                        <button
+                                                            onClick={printAll}
+                                                            disabled={isDirty}
+                                                            className={`flex items-center gap-2 px-3 md:px-4 py-2.5 rounded-xl text-sm font-bold border transition-all min-h-[44px] ${isDirty ? 'bg-slate-50 text-slate-300 border-slate-100' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 active:scale-95'}`}
+                                                        >
+                                                            <MaterialIcon name="print" className="text-[18px]" />
+                                                            <span className="hidden sm:inline">Imprimir</span>
+                                                        </button>
+                                                        <button
+                                                            onClick={downloadAllZip}
+                                                            disabled={isDirty}
+                                                            className={`flex items-center gap-2 px-3 md:px-4 py-2.5 rounded-xl text-sm font-bold transition-all min-h-[44px] ${isDirty ? 'bg-slate-200 text-slate-400' : 'bg-slate-900 text-white hover:bg-slate-800 active:scale-95 shadow-lg shadow-slate-200'}`}
+                                                        >
+                                                            <MaterialIcon name="folder_zip" className="text-[18px]" />
+                                                            ZIP
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* --- Gallery Body --- */}
+                                            <div className="p-4 md:p-8 flex-grow custom-scrollbar overflow-y-auto" style={{ maxHeight: 'calc(100dvh - 180px)' }}>
+                                                <div className="mb-4 md:mb-6 flex flex-wrap items-center justify-between gap-2">
+                                                    <h3 className="text-sm md:text-md font-bold text-slate-800">Galería ({appliedBulkText.split('\n').filter(l => l.trim() !== '').length})</h3>
+                                                    {isDirty && (
+                                                        <div className="flex items-center gap-2 text-amber-600 px-3 py-1 bg-amber-50 rounded-full border border-amber-100">
+                                                            <MaterialIcon name="warning" className="text-[14px]" />
+                                                            <span className="text-[10px] font-bold uppercase hidden sm:inline">Cambios detectados — Actualizar</span>
+                                                            <span className="text-[10px] font-bold uppercase sm:hidden">Actualizar</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Fluid grid: 2 cols on mobile, respects printColumns on md+ */}
+                                                <div
+                                                    className="qr-gallery-grid"
+                                                    style={window.innerWidth >= 768 ? { gridTemplateColumns: `repeat(${printColumns}, minmax(0, 1fr))` } : undefined}
+                                                >
+                                                    {appliedBulkText.split('\n').filter(l => l.trim() !== '').map((line, idx) => (
+                                                        <QRCodeItem
+                                                            key={idx}
+                                                            line={line}
+                                                            logoUrl={logoUrl}
+                                                            qrColor={qrColor}
+                                                            qrColor2={qrColor2}
+                                                            bgColor={bgColor}
+                                                            fillType={fillType}
+                                                            dotStyle={dotStyle}
+                                                            eyeFrameStyle={eyeFrameStyle}
+                                                            eyePupilStyle={eyePupilStyle}
+                                                            eyeFrameColor={eyeFrameColor}
+                                                            showLabel={appliedShowLabel}
+                                                            isTransparent={isTransparent}
+                                                            qrSize={qrSize}
+                                                            quietZone={quietZone}
+                                                            errorLevel={errorLevel}
+                                                        />
+                                                    ))}
+
+                                                    {appliedBulkText.split('\n').filter(l => l.trim() !== '').length === 0 && (
+                                                        <div className="col-span-full h-48 md:h-64 border-2 border-dashed border-slate-100 rounded-2xl md:rounded-[2rem] flex flex-col items-center justify-center gap-4 text-center px-6 md:px-10">
+                                                            <div className="w-14 h-14 md:w-16 md:h-16 bg-slate-50 rounded-full flex items-center justify-center">
+                                                                <MaterialIcon name="qr_code_scanner" className="text-slate-300 text-[28px] md:text-[32px]" />
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-slate-500 font-bold text-sm">Sin resultados generados</p>
+                                                                <p className="text-slate-400 text-xs mt-1">Ingresa el contenido y presiona Generar QRs.</p>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </main>
+                        </div>
+                    </div>
+
+                    {/* Mobile Bottom Navigation Bar */}
+                    <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 z-50 flex justify-around no-print safe-area-inset-bottom">
+                        {[
+                            { tab: TAB_DATOS, icon: 'link', label: 'Contenido' },
+                            { tab: TAB_DIMENSIONES, icon: 'aspect_ratio', label: 'Dimensiones' },
+                            { tab: TAB_FORMAS, icon: 'grid_view', label: 'Diseño' },
+                            { tab: TAB_COLORES, icon: 'palette', label: 'Colores' },
+                            { tab: TAB_LOGO, icon: 'add_photo_alternate', label: 'Logo' },
+                        ].map(({ tab, icon, label }) => (
+                            <button
+                                key={tab}
+                                onClick={() => { setActiveTab(tab); setMobileView('config'); }}
+                                className={`flex flex-col items-center justify-center flex-1 py-2 gap-0.5 min-h-[56px] transition-colors ${activeTab === tab && mobileView === 'config' ? 'text-indigo-600' : 'text-slate-400'}`}
+                            >
+                                <MaterialIcon name={icon} className={`text-[22px] ${activeTab === tab && mobileView === 'config' ? 'fill-1' : ''}`} />
+                                <span className="text-[9px] font-semibold leading-tight">{label}</span>
+                            </button>
+                        ))}
+                    </nav>
+
+                    <div className="hidden print-area bg-white min-h-screen">
+                        <div className="text-center mb-6 py-4 border-b border-slate-200">
+                            <h1 className="text-2xl font-bold text-slate-800">Galería de Resultados</h1>
+                        </div>
+                        <div className="print-grid" style={{ gridTemplateColumns: `repeat(${printColumns}, minmax(0, 1fr))` }}>
+                            {appliedBulkText.split('\n').filter(l => l.trim() !== '').map((line, idx) => (
+                                <QRCodeItem key={idx} line={line} logoUrl={logoUrl} qrColor={qrColor} qrColor2={qrColor2} bgColor={bgColor} fillType={fillType} dotStyle={dotStyle} eyeFrameStyle={eyeFrameStyle} eyePupilStyle={eyePupilStyle} eyeFrameColor={eyeFrameColor} showLabel={appliedShowLabel} isTransparent={isTransparent} qrSize={qrSize} quietZone={quietZone} errorLevel={errorLevel} />
+                            ))}
+                        </div>
+                    </div>
+                </React.Fragment>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
