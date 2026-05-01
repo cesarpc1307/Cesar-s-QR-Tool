@@ -183,7 +183,6 @@
         }
 
         /* --- Custom Scrollbar --- */
-<<<<<<< HEAD
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -210,16 +209,6 @@
         input[type="email"],
         textarea,
         label[for] {
-=======
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        /* --- Mobile: ensure touch-friendly min heights --- */
-        button, select, input[type="text"],
-        input[type="email"], textarea, label[for] {
->>>>>>> bf4674805bf74ef5dbbfbfdb698c8deebb021cd2
             touch-action: manipulation;
         }
 
@@ -239,12 +228,8 @@
         /* On md+ the inline style takes over via JS */
         @media (min-width: 768px) {
             .qr-gallery-grid {
-<<<<<<< HEAD
                 grid-template-columns: unset;
                 /* will be set by inline style */
-=======
-                grid-template-columns: unset; /* will be set by inline style */
->>>>>>> bf4674805bf74ef5dbbfbfdb698c8deebb021cd2
             }
         }
 
@@ -280,10 +265,7 @@
             .desktop-sidebar {
                 display: none !important;
             }
-<<<<<<< HEAD
 
-=======
->>>>>>> bf4674805bf74ef5dbbfbfdb698c8deebb021cd2
             /* Main content panel takes full width on mobile */
             .main-content-area {
                 padding: 0 !important;
@@ -350,11 +332,7 @@
                 border-radius: 8px !important;
             }
 
-<<<<<<< HEAD
             .print-item>div:first-child {
-=======
-            .print-item > div:first-child {
->>>>>>> bf4674805bf74ef5dbbfbfdb698c8deebb021cd2
                 width: 100% !important;
                 aspect-ratio: 1 / 1;
             }
@@ -366,12 +344,8 @@
                 display: block;
             }
 
-<<<<<<< HEAD
             .snap-start,
             .flex-shrink-0 {
-=======
-            .snap-start, .flex-shrink-0 {
->>>>>>> bf4674805bf74ef5dbbfbfdb698c8deebb021cd2
                 flex-shrink: 1 !important;
                 width: 100% !important;
             }
@@ -490,10 +464,7 @@
             const [mobileView, setMobileView] = useState('config');
             const [bulkText, setBulkText] = useState("https://github.com/cesarpc1307/Cesar-s-QR-Tool\nhttps://example.com");
             const [appliedBulkText, setAppliedBulkText] = useState("https://github.com/cesarpc1307/Cesar-s-QR-Tool\nhttps://example.com");
-<<<<<<< HEAD
-=======
 
->>>>>>> bf4674805bf74ef5dbbfbfdb698c8deebb021cd2
             const [dotStyle, setDotStyle] = useState('square');
             const [eyeFrameStyle, setEyeFrameStyle] = useState('square');
             const [eyePupilStyle, setEyePupilStyle] = useState('square');
@@ -519,11 +490,7 @@
             useEffect(() => {
                 try {
                     const lines = bulkText.split('\n').filter(l => l.trim() !== '');
-<<<<<<< HEAD
-                    let firstUrl = 'https://qrstudiopro.io';
-=======
                     let firstUrl = 'https://github.com/cesarpc1307/Cesar-s-QR-Tool';
->>>>>>> bf4674805bf74ef5dbbfbfdb698c8deebb021cd2
                     if (lines.length > 0) {
                         const firstLine = lines[0].trim();
                         const spaceIdx = firstLine.indexOf(' ');
@@ -647,11 +614,7 @@
             return (
                 <React.Fragment>
                     {/* ===== MAIN APP SHELL (no-print) ===== */}
-<<<<<<< HEAD
                     <div className="flex flex-col no-print" style={{ height: '100dvh', overflow: 'hidden' }}>
-=======
-                    <div className="flex flex-col no-print" style={{height: '100dvh', overflow: 'hidden'}}>
->>>>>>> bf4674805bf74ef5dbbfbfdb698c8deebb021cd2
 
                         {/* ── TOP HEADER ── */}
                         <header className="bg-white flex items-center justify-between px-4 md:px-8 w-full h-14 md:h-16 border-b border-slate-200 z-50 flex-shrink-0">
@@ -680,36 +643,20 @@
                         <div className="mobile-view-tabs bg-white border-b border-slate-200 flex-shrink-0">
                             <button
                                 onClick={() => setMobileView('config')}
-<<<<<<< HEAD
                                 className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold border-b-2 transition-colors ${mobileView === 'config'
-                                    ? 'border-indigo-600 text-indigo-600'
-                                    : 'border-transparent text-slate-500'
-                                    }`}
-=======
-                                className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold border-b-2 transition-colors ${
-                                    mobileView === 'config'
                                         ? 'border-indigo-600 text-indigo-600'
                                         : 'border-transparent text-slate-500'
-                                }`}
->>>>>>> bf4674805bf74ef5dbbfbfdb698c8deebb021cd2
+                                    }`}
                             >
                                 <MaterialIcon name="tune" className="text-[20px]" />
                                 Configurar
                             </button>
                             <button
                                 onClick={() => setMobileView('preview')}
-<<<<<<< HEAD
                                 className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold border-b-2 transition-colors ${mobileView === 'preview'
-                                    ? 'border-indigo-600 text-indigo-600'
-                                    : 'border-transparent text-slate-500'
-                                    }`}
-=======
-                                className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold border-b-2 transition-colors ${
-                                    mobileView === 'preview'
                                         ? 'border-indigo-600 text-indigo-600'
                                         : 'border-transparent text-slate-500'
-                                }`}
->>>>>>> bf4674805bf74ef5dbbfbfdb698c8deebb021cd2
+                                    }`}
                             >
                                 <MaterialIcon name="grid_view" className="text-[20px]" />
                                 Vista Previa
@@ -736,11 +683,7 @@
 
                                 <div className="px-3 py-4 border-t border-slate-100 mt-2 space-y-2">
                                     <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
-<<<<<<< HEAD
                                         © {new Date().getFullYear()} César's QR Tool. <br />Todos los derechos reservados.
-=======
-                                        © {new Date().getFullYear()} César's QR Tool. <br/>Todos los derechos reservados.
->>>>>>> bf4674805bf74ef5dbbfbfdb698c8deebb021cd2
                                     </p>
                                     <a
                                         href="https://github.com/cesarpc1307"
@@ -917,19 +860,11 @@
                                                     <p className="text-body-md text-on-surface-variant mb-4">El patrón principal de los puntos del QR.</p>
                                                     <div className="grid grid-cols-1 gap-2">
                                                         {[
-<<<<<<< HEAD
                                                             { s: 'square', i: 'grid_4x4', label: 'Clásico', desc: 'Cuadrados estándar. Máxima compatibilidad.' },
                                                             { s: 'dots', i: 'lens', label: 'Moderno', desc: 'Puntos circulares. Estilo contemporáneo.' },
                                                             { s: 'classy', i: 'auto_awesome', label: 'Elegante', desc: 'Formas suavizadas. Ideal para eventos y diseño premium.' },
                                                             { s: 'rounded', i: 'apps', label: 'Redondeado', desc: 'Cuadrados con bordes suaves.' },
                                                             { s: 'extra-rounded', i: 'motion_photos_on', label: 'Fluido', desc: 'Bordes extra redondeados y orgánicos.' },
-=======
-                                                            { s: 'square',        i: 'grid_4x4',          label: 'Clásico',   desc: 'Cuadrados estándar. Máxima compatibilidad.' },
-                                                            { s: 'dots',          i: 'lens',              label: 'Moderno',   desc: 'Puntos circulares. Estilo contemporáneo.' },
-                                                            { s: 'classy',        i: 'auto_awesome',      label: 'Elegante',  desc: 'Formas suavizadas. Ideal para eventos y diseño premium.' },
-                                                            { s: 'rounded',       i: 'apps',              label: 'Redondeado',desc: 'Cuadrados con bordes suaves.' },
-                                                            { s: 'extra-rounded', i: 'motion_photos_on',  label: 'Fluido',    desc: 'Bordes extra redondeados y orgánicos.' },
->>>>>>> bf4674805bf74ef5dbbfbfdb698c8deebb021cd2
                                                         ].map(({ s, i, label, desc }) => (
                                                             <button
                                                                 key={s}
@@ -953,15 +888,9 @@
                                                     <p className="text-body-md text-on-surface-variant mb-4">El borde exterior de los 3 ojos del QR.</p>
                                                     <div className="grid grid-cols-3 gap-2">
                                                         {[
-<<<<<<< HEAD
                                                             { s: 'square', i: 'square', label: 'Cuadrado' },
                                                             { s: 'extra-rounded', i: 'rounded_corner', label: 'Redondeado' },
                                                             { s: 'dot', i: 'radio_button_unchecked', label: 'Extra Redondo' },
-=======
-                                                            { s: 'square',        i: 'square',                label: 'Cuadrado' },
-                                                            { s: 'extra-rounded', i: 'rounded_corner',        label: 'Redondeado' },
-                                                            { s: 'dot',           i: 'radio_button_unchecked', label: 'Extra Redondo' },
->>>>>>> bf4674805bf74ef5dbbfbfdb698c8deebb021cd2
                                                         ].map(({ s, i, label }) => (
                                                             <button
                                                                 key={s}
@@ -981,13 +910,8 @@
                                                     <p className="text-body-md text-on-surface-variant mb-4">El punto interior de los 3 ojos del QR.</p>
                                                     <div className="grid grid-cols-3 gap-2">
                                                         {[
-<<<<<<< HEAD
                                                             { s: 'square', i: 'stop', label: 'Cuadrado' },
                                                             { s: 'dot', i: 'circle', label: 'Redondo' },
-=======
-                                                            { s: 'square', i: 'stop',   label: 'Cuadrado' },
-                                                            { s: 'dot',    i: 'circle', label: 'Redondo' },
->>>>>>> bf4674805bf74ef5dbbfbfdb698c8deebb021cd2
                                                         ].map(({ s, i, label }) => (
                                                             <button
                                                                 key={s}
@@ -1176,11 +1100,7 @@
                                             </div>
 
                                             {/* --- Gallery Body --- */}
-<<<<<<< HEAD
                                             <div className="p-4 md:p-8 flex-grow custom-scrollbar overflow-y-auto" style={{ maxHeight: 'calc(100dvh - 180px)' }}>
-=======
-                                            <div className="p-4 md:p-8 flex-grow custom-scrollbar overflow-y-auto" style={{maxHeight: 'calc(100dvh - 180px)'}}>
->>>>>>> bf4674805bf74ef5dbbfbfdb698c8deebb021cd2
                                                 <div className="mb-4 md:mb-6 flex flex-wrap items-center justify-between gap-2">
                                                     <h3 className="text-sm md:text-md font-bold text-slate-800">Galería ({appliedBulkText.split('\n').filter(l => l.trim() !== '').length})</h3>
                                                     {isDirty && (
@@ -1241,19 +1161,11 @@
                     {/* Mobile Bottom Navigation Bar */}
                     <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 z-50 flex justify-around no-print safe-area-inset-bottom">
                         {[
-<<<<<<< HEAD
                             { tab: TAB_DATOS, icon: 'link', label: 'Contenido' },
                             { tab: TAB_DIMENSIONES, icon: 'aspect_ratio', label: 'Dimensiones' },
                             { tab: TAB_FORMAS, icon: 'grid_view', label: 'Diseño' },
                             { tab: TAB_COLORES, icon: 'palette', label: 'Colores' },
                             { tab: TAB_LOGO, icon: 'add_photo_alternate', label: 'Logo' },
-=======
-                            { tab: TAB_DATOS,       icon: 'link',               label: 'Contenido' },
-                            { tab: TAB_DIMENSIONES, icon: 'aspect_ratio',       label: 'Dimensiones' },
-                            { tab: TAB_FORMAS,      icon: 'grid_view',          label: 'Diseño' },
-                            { tab: TAB_COLORES,     icon: 'palette',            label: 'Colores' },
-                            { tab: TAB_LOGO,        icon: 'add_photo_alternate',label: 'Logo' },
->>>>>>> bf4674805bf74ef5dbbfbfdb698c8deebb021cd2
                         ].map(({ tab, icon, label }) => (
                             <button
                                 key={tab}
@@ -1285,8 +1197,4 @@
     </script>
 </body>
 
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> bf4674805bf74ef5dbbfbfdb698c8deebb021cd2
