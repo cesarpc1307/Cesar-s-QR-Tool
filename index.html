@@ -374,6 +374,22 @@
             <span className={`material-symbols-outlined ${className}`}>{name}</span>
         );
 
+        const AppFooter = ({ className = "" }) => (
+            <div className={`px-3 py-4 border-t border-slate-100 mt-auto space-y-2 ${className}`}>
+                <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
+                    © {new Date().getFullYear()} César's QR Tool. <br className="md:hidden" /> Todos los derechos reservados.
+                </p>
+                <a
+                    href="https://github.com/cesarpc1307"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-[10px] text-indigo-600 font-bold hover:underline"
+                >
+                    Desarrollado por Ing. César Pineda | Honduras
+                </a>
+            </div>
+        );
+
         const QRCodeItem = ({ line, logoUrl, qrColor, qrColor2, bgColor, fillType, dotStyle, eyeFrameStyle, eyePupilStyle, eyeFrameColor, showLabel, isTransparent, qrSize, quietZone, errorLevel }) => {
             const [imgSrc, setImgSrc] = useState(null);
             const [isHovered, setIsHovered] = useState(false);
@@ -681,19 +697,7 @@
                                     {renderSidebarItem(TAB_LOGO, 'add_photo_alternate', 'Logo')}
                                 </nav>
 
-                                <div className="px-3 py-4 border-t border-slate-100 mt-2 space-y-2">
-                                    <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
-                                        © {new Date().getFullYear()} César's QR Tool. <br />Todos los derechos reservados.
-                                    </p>
-                                    <a
-                                        href="https://github.com/cesarpc1307"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="block text-[10px] text-indigo-600 font-bold hover:underline"
-                                    >
-                                        Desarrollado por Ing. César Pineda | Honduras
-                                    </a>
-                                </div>
+                                <AppFooter />
 
                                 <button
                                     onClick={() => {
@@ -1154,6 +1158,8 @@
                                         </div>
                                     </div>
                                 </div>
+                                {/* Mobile Footer */}
+                                <AppFooter className="md:hidden text-center py-8 px-6" />
                             </main>
                         </div>
                     </div>
