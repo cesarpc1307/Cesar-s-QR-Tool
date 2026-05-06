@@ -1,0 +1,223 @@
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+body {
+    background-color: #F8FAFC;
+}
+
+/* --- Color Swatches --- */
+.color-swatch-input {
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: none;
+    flex-shrink: 0;
+}
+
+.color-swatch-input::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.color-swatch-input::-webkit-color-swatch {
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+}
+
+/* --- Sidebar Tab Buttons --- */
+.tab-btn {
+    min-height: 44px;
+}
+
+.tab-btn.active {
+    background-color: #ffffff;
+    color: #3525cd;
+    border-color: #c7c4d8;
+    font-weight: 600;
+}
+
+.tab-btn.active .material-symbols-outlined {
+    font-variation-settings: 'FILL' 1;
+}
+
+.fill-1 {
+    font-variation-settings: 'FILL' 1;
+}
+
+/* --- Custom Scrollbar --- */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* --- Mobile: ensure touch-friendly min heights --- */
+button,
+select,
+input[type="text"],
+input[type="email"],
+textarea,
+label[for] {
+    touch-action: manipulation;
+}
+
+/* Gallery grid: fluid on mobile, respects printColumns on md+ */
+.qr-gallery-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 640px) {
+    .qr-gallery-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* On md+ the inline style takes over via JS */
+@media (min-width: 768px) {
+    .qr-gallery-grid {
+        grid-template-columns: unset;
+        /* will be set by inline style */
+    }
+}
+
+/* --- Mobile layout: stacked panels --- */
+/* Mobile view switcher tabs (Config / Preview) */
+.mobile-view-tabs {
+    display: flex;
+}
+
+@media (min-width: 768px) {
+    .mobile-view-tabs {
+        display: none;
+    }
+}
+
+/* Mobile panel visibility */
+.mobile-panel {
+    display: none;
+}
+
+.mobile-panel.active {
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .mobile-panel {
+        display: block !important;
+    }
+}
+
+/* Hide desktop sidebar on mobile */
+@media (max-width: 767px) {
+    .desktop-sidebar {
+        display: none !important;
+    }
+
+    /* Main content panel takes full width on mobile */
+    .main-content-area {
+        padding: 0 !important;
+    }
+}
+
+/* Mobile: hide the result panel header column selector (use simplified version) */
+@media (max-width: 767px) {
+    .results-col-desktop {
+        display: none;
+    }
+}
+
+/* Safe area for iPhones with home bar */
+.safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* --- Print Styles --- */
+@media print {
+    body {
+        background: white !important;
+        margin: 0;
+        padding: 0;
+        overflow: visible !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .print-area {
+        display: block !important;
+        position: static;
+        width: 100%;
+        top: 0;
+        left: 0;
+        height: auto;
+        overflow: visible;
+    }
+
+    .print-grid {
+        display: grid;
+        gap: 8px;
+        width: 100%;
+        align-items: start;
+    }
+
+    .print-item {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        flex-shrink: 1 !important;
+        box-sizing: border-box;
+        padding: 6px !important;
+        border-radius: 8px !important;
+    }
+
+    .print-item>div:first-child {
+        width: 100% !important;
+        aspect-ratio: 1 / 1;
+    }
+
+    .print-item img {
+        width: 100% !important;
+        height: auto !important;
+        max-width: 100% !important;
+        display: block;
+    }
+
+    .snap-start,
+    .flex-shrink-0 {
+        flex-shrink: 1 !important;
+        width: 100% !important;
+    }
+
+    @page {
+        size: A4;
+        margin: 10mm;
+    }
+}
