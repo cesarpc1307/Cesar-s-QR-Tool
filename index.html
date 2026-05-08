@@ -7,20 +7,26 @@
     <title>César’s QR Tool - Generador Masivo</title>
 
     <!-- PWA & Icon Configuration -->
-    <link rel="icon" href="favicon.ico" type="image/x-icon" />
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="icon" type="image/png" href="icono.png" />
     <link rel="apple-touch-icon" href="icono.png" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="msapplication-TileImage" content="icono.png" />
+    <meta name="msapplication-TileColor" content="#3525cd" />
     <link rel="manifest" href="manifest.json" />
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS Core -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <!-- Configuración Externa de Tailwind -->
+    <script src="tailwind.config.js"></script>
+
+    <!-- Estilos Externos -->
+    <link rel="stylesheet" href="styles.css" />
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -33,334 +39,13 @@
     <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        rel="stylesheet" />
-
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "error-container": "#ffdad6",
-                        "on-secondary": "#ffffff",
-                        "secondary": "#006591",
-                        "on-tertiary-container": "#ffd2be",
-                        "primary": "#3525cd",
-                        "inverse-primary": "#c3c0ff",
-                        "on-primary-fixed": "#0f0069",
-                        "on-surface": "#0b1c30",
-                        "secondary-fixed-dim": "#89ceff",
-                        "tertiary-container": "#a44100",
-                        "on-tertiary-fixed": "#351000",
-                        "surface-variant": "#d3e4fe",
-                        "secondary-container": "#39b8fd",
-                        "on-primary-container": "#dad7ff",
-                        "on-secondary-fixed-variant": "#004c6e",
-                        "on-background": "#0b1c30",
-                        "on-secondary-fixed": "#001e2f",
-                        "outline": "#777587",
-                        "inverse-on-surface": "#eaf1ff",
-                        "on-primary": "#ffffff",
-                        "on-error-container": "#93000a",
-                        "on-primary-fixed-variant": "#3323cc",
-                        "error": "#ba1a1a",
-                        "surface-container-highest": "#d3e4fe",
-                        "primary-fixed": "#e2dfff",
-                        "inverse-surface": "#213145",
-                        "on-tertiary": "#ffffff",
-                        "tertiary": "#7e3000",
-                        "on-tertiary-fixed-variant": "#7b2f00",
-                        "surface-container-lowest": "#ffffff",
-                        "on-secondary-container": "#004666",
-                        "primary-container": "#4f46e5",
-                        "tertiary-fixed-dim": "#ffb695",
-                        "surface-bright": "#f8f9ff",
-                        "on-surface-variant": "#464555",
-                        "surface": "#f8f9ff",
-                        "surface-container": "#e5eeff",
-                        "surface-container-low": "#eff4ff",
-                        "surface-container-high": "#dce9ff",
-                        "primary-fixed-dim": "#c3c0ff",
-                        "tertiary-fixed": "#ffdbcc",
-                        "on-error": "#ffffff",
-                        "secondary-fixed": "#c9e6ff",
-                        "background": "#f8f9ff",
-                        "surface-dim": "#cbdbf5",
-                        "surface-tint": "#4d44e3",
-                        "outline-variant": "#c7c4d8"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
-                    },
-                    "spacing": {
-                        "sm": "12px",
-                        "md": "16px",
-                        "gutter": "20px",
-                        "xs": "4px",
-                        "base": "8px",
-                        "xl": "32px",
-                        "margin": "24px",
-                        "lg": "24px"
-                    },
-                    "fontFamily": {
-                        "display-md": ["Inter"],
-                        "label-sm": ["Inter"],
-                        "label-md": ["Inter"],
-                        "headline-sm": ["Inter"],
-                        "body-md": ["Inter"],
-                        "display-lg": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "title-md": ["Inter"]
-                    },
-                    "fontSize": {
-                        "display-md": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
-                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
-                        "headline-sm": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
-                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
-                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                        "title-md": ["18px", { "lineHeight": "28px", "fontWeight": "600" }]
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-
-        body {
-            background-color: #F8FAFC;
-        }
-
-        /* --- Color Swatches --- */
-        .color-swatch-input {
-            width: 40px;
-            height: 40px;
-            min-height: 40px;
-            padding: 0;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            background: none;
-            flex-shrink: 0;
-        }
-
-        .color-swatch-input::-webkit-color-swatch-wrapper {
-            padding: 0;
-        }
-
-        .color-swatch-input::-webkit-color-swatch {
-            border: 1px solid #E2E8F0;
-            border-radius: 6px;
-        }
-
-        /* --- Sidebar Tab Buttons --- */
-        .tab-btn {
-            min-height: 44px;
-        }
-
-        .tab-btn.active {
-            background-color: #ffffff;
-            color: #3525cd;
-            border-color: #c7c4d8;
-            font-weight: 600;
-        }
-
-        .tab-btn.active .material-symbols-outlined {
-            font-variation-settings: 'FILL' 1;
-        }
-
-        .fill-1 {
-            font-variation-settings: 'FILL' 1;
-        }
-
-        /* --- Custom Scrollbar --- */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 10px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-        /* --- Mobile: ensure touch-friendly min heights --- */
-        button,
-        select,
-        input[type="text"],
-        input[type="email"],
-        textarea,
-        label[for] {
-            touch-action: manipulation;
-        }
-
-        /* Gallery grid: fluid on mobile, respects printColumns on md+ */
-        .qr-gallery-grid {
-            display: grid;
-            gap: 1rem;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        @media (min-width: 640px) {
-            .qr-gallery-grid {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-            }
-        }
-
-        /* On md+ the inline style takes over via JS */
-        @media (min-width: 768px) {
-            .qr-gallery-grid {
-                grid-template-columns: unset;
-                /* will be set by inline style */
-            }
-        }
-
-        /* --- Mobile layout: stacked panels --- */
-        /* Mobile view switcher tabs (Config / Preview) */
-        .mobile-view-tabs {
-            display: flex;
-        }
-
-        @media (min-width: 768px) {
-            .mobile-view-tabs {
-                display: none;
-            }
-        }
-
-        /* Mobile panel visibility */
-        .mobile-panel {
-            display: none;
-        }
-
-        .mobile-panel.active {
-            display: block;
-        }
-
-        @media (min-width: 768px) {
-            .mobile-panel {
-                display: block !important;
-            }
-        }
-
-        /* Hide desktop sidebar on mobile */
-        @media (max-width: 767px) {
-            .desktop-sidebar {
-                display: none !important;
-            }
-
-            /* Main content panel takes full width on mobile */
-            .main-content-area {
-                padding: 0 !important;
-            }
-        }
-
-        /* Mobile: hide the result panel header column selector (use simplified version) */
-        @media (max-width: 767px) {
-            .results-col-desktop {
-                display: none;
-            }
-        }
-
-        /* Safe area for iPhones with home bar */
-        .safe-area-inset-bottom {
-            padding-bottom: env(safe-area-inset-bottom, 0px);
-        }
-
-        /* --- Print Styles --- */
-        @media print {
-            body {
-                background: white !important;
-                margin: 0;
-                padding: 0;
-                overflow: visible !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-
-            .no-print {
-                display: none !important;
-            }
-
-            .print-area {
-                display: block !important;
-                position: static;
-                width: 100%;
-                top: 0;
-                left: 0;
-                height: auto;
-                overflow: visible;
-            }
-
-            .print-grid {
-                display: grid;
-                gap: 8px;
-                width: 100%;
-                align-items: start;
-            }
-
-            .print-item {
-                break-inside: avoid;
-                page-break-inside: avoid;
-                display: flex !important;
-                flex-direction: column;
-                align-items: center;
-                justify-content: flex-start;
-                width: 100% !important;
-                min-width: 0 !important;
-                max-width: 100% !important;
-                flex-shrink: 1 !important;
-                box-sizing: border-box;
-                padding: 6px !important;
-                border-radius: 8px !important;
-            }
-
-            .print-item>div:first-child {
-                width: 100% !important;
-                aspect-ratio: 1 / 1;
-            }
-
-            .print-item img {
-                width: 100% !important;
-                height: auto !important;
-                max-width: 100% !important;
-                display: block;
-            }
-
-            .snap-start,
-            .flex-shrink-0 {
-                flex-shrink: 1 !important;
-                width: 100% !important;
-            }
-
-            @page {
-                size: A4;
-                margin: 10mm;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 </head>
 
 <body class="font-body-md text-on-background">
     <div id="root"></div>
 
+    <!-- Lógica de la Aplicación -->
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
@@ -389,6 +74,183 @@
                 </a>
             </div>
         );
+
+        const AboutModal = ({ isOpen, onClose }) => {
+            if (!isOpen) return null;
+            return (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white w-full max-w-lg rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="px-6 py-8 md:p-10">
+                            <div className="flex items-start justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shadow-inner">
+                                        <MaterialIcon name="verified" className="text-3xl" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl font-extrabold text-slate-900">Acerca de la Herramienta</h2>
+                                        <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest">Versión 1.1.0</p>
+                                    </div>
+                                </div>
+                                <button onClick={onClose} className="p-2 rounded-full hover:bg-slate-100 transition-colors">
+                                    <MaterialIcon name="close" className="text-slate-400" />
+                                </button>
+                            </div>
+                            
+                            <div className="space-y-4">
+                                <p className="text-slate-600 text-sm leading-relaxed">
+                                    <strong className="text-slate-900">César's QR Tool</strong> es una herramienta segura, privada y de uso libre diseñada para facilitar la creación de códigos QR con diseño premium.
+                                </p>
+                                
+                                <div className="grid grid-cols-1 gap-3">
+                                    <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                        <MaterialIcon name="lock" className="text-indigo-500 text-xl" />
+                                        <div>
+                                            <p className="text-sm font-bold text-slate-800">Privacidad Total</p>
+                                            <p className="text-xs text-slate-500">Los QR se generan localmente en tu navegador. Tus datos nunca salen de tu dispositivo.</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                        <MaterialIcon name="code" className="text-indigo-500 text-xl" />
+                                        <div>
+                                            <p className="text-sm font-bold text-slate-800">Uso Libre (Open Source)</p>
+                                            <p className="text-xs text-slate-500">Ideal para entornos corporativos y uso personal sin rastreos ni publicidad.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="pt-6 border-t border-slate-100">
+                                    <p className="text-xs text-slate-400 font-medium mb-3">DESARROLLADO POR</p>
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-400">
+                                            <MaterialIcon name="person" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-bold text-slate-800">Ing. César Pineda</p>
+                                            <a href="https://github.com/cesarpc1307/Cesar-s-QR-Tool" target="_blank" className="text-xs text-indigo-600 font-bold hover:underline flex items-center gap-1">
+                                                GitHub Repository <MaterialIcon name="open_in_new" className="text-[12px]" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button 
+                                onClick={onClose}
+                                className="w-full mt-8 py-3.5 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 active:scale-[0.98] transition-all shadow-lg shadow-indigo-200"
+                            >
+                                Entendido
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const ShareModal = ({ isOpen, onClose }) => {
+            const [copied, setCopied] = useState(false);
+            if (!isOpen) return null;
+
+            const shareUrl = "https://cesarpc1307.github.io/Cesar-s-QR-Tool/";
+            const shareSubject = "Herramienta de QR Masivo - Premium & Segura";
+            const shareText = `Mira este Generador de QR Masivo: ${shareUrl}\n\nEs una herramienta 100% segura, rápida y privada. Todos los códigos se generan localmente en tu navegador. ¡Pruébala!`;
+
+            const handleCopy = () => {
+                navigator.clipboard.writeText(shareUrl);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2500);
+            };
+
+            const shareWhatsApp = () => {
+                window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
+            };
+
+            const shareGmail = () => {
+                window.open(`https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent(shareSubject)}&body=${encodeURIComponent(shareText)}`, '_blank');
+            };
+
+            const shareOutlook = () => {
+                window.open(`https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(shareSubject)}&body=${encodeURIComponent(shareText)}`, '_blank');
+            };
+
+            return (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="px-6 py-8">
+                            <div className="flex items-center justify-between mb-6">
+                                <h2 className="text-xl font-extrabold text-slate-900">Compartir</h2>
+                                <button onClick={onClose} className="p-2 rounded-full hover:bg-slate-100 transition-colors">
+                                    <MaterialIcon name="close" className="text-slate-400" />
+                                </button>
+                            </div>
+                            
+                            <div className="space-y-3">
+                                {/* Copy Link */}
+                                <button 
+                                    onClick={handleCopy}
+                                    className="w-full flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl hover:border-indigo-200 hover:bg-indigo-50 transition-all group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-slate-600 group-hover:text-indigo-600 transition-colors">
+                                            <MaterialIcon name={copied ? "done" : "content_copy"} />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-bold text-slate-700 text-left">{copied ? "¡Copiado!" : "Copiar Enlace"}</p>
+                                            {copied && <p className="text-[10px] text-indigo-500 font-bold animate-pulse">¡Ya puedes pegarlo donde gustes!</p>}
+                                        </div>
+                                    </div>
+                                    {!copied && <MaterialIcon name="chevron_right" className="text-slate-300" />}
+                                </button>
+
+                                {/* WhatsApp */}
+                                <button 
+                                    onClick={shareWhatsApp}
+                                    className="w-full flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl hover:border-green-200 hover:bg-green-50 transition-all group"
+                                >
+                                    <div className="flex items-center gap-3 text-left">
+                                        <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-slate-600 group-hover:text-green-600 transition-colors">
+                                            <MaterialIcon name="chat" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-bold text-slate-700">WhatsApp</p>
+                                            <p className="text-[10px] text-green-600 font-medium">Recomendar (Uso Seguro)</p>
+                                        </div>
+                                    </div>
+                                    <MaterialIcon name="open_in_new" className="text-slate-300 text-sm" />
+                                </button>
+
+                                <div className="grid grid-cols-2 gap-3 mt-4">
+                                    {/* Gmail */}
+                                    <button 
+                                        onClick={shareGmail}
+                                        className="flex flex-col items-center gap-2 p-4 bg-slate-50 border border-slate-100 rounded-2xl hover:border-red-200 hover:bg-red-50 transition-all group"
+                                    >
+                                        <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-slate-400 group-hover:text-red-500 transition-colors">
+                                            <MaterialIcon name="mail" />
+                                        </div>
+                                        <span className="text-[11px] font-bold text-slate-600">Gmail</span>
+                                    </button>
+
+                                    {/* Outlook */}
+                                    <button 
+                                        onClick={shareOutlook}
+                                        className="flex flex-col items-center gap-2 p-4 bg-slate-50 border border-slate-100 rounded-2xl hover:border-blue-200 hover:bg-blue-50 transition-all group"
+                                    >
+                                        <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-slate-400 group-hover:text-blue-500 transition-colors">
+                                            <MaterialIcon name="alternate_email" />
+                                        </div>
+                                        <span className="text-[11px] font-bold text-slate-600">Outlook</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <p className="mt-6 text-center text-[10px] text-slate-400 font-medium leading-relaxed">
+                                Comparte el link de la herramienta para que otros <br /> puedan usarla de forma segura.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
 
         const QRCodeItem = ({ line, logoUrl, qrColor, qrColor2, bgColor, fillType, dotStyle, eyeFrameStyle, eyePupilStyle, eyeFrameColor, showLabel, isTransparent, qrSize, quietZone, errorLevel }) => {
             const [imgSrc, setImgSrc] = useState(null);
@@ -478,6 +340,8 @@
             const [activeTab, setActiveTab] = useState(TAB_DATOS);
             // 'config' | 'preview' — controls which panel is visible on mobile
             const [mobileView, setMobileView] = useState('config');
+            const [showAbout, setShowAbout] = useState(false);
+            const [showShare, setShowShare] = useState(false);
             const [bulkText, setBulkText] = useState("https://github.com/cesarpc1307/Cesar-s-QR-Tool\nhttps://example.com");
             const [appliedBulkText, setAppliedBulkText] = useState("https://github.com/cesarpc1307/Cesar-s-QR-Tool\nhttps://example.com");
 
@@ -638,19 +502,22 @@
                                 <h1 className="text-lg md:text-xl font-bold tracking-tight text-indigo-600">César's QR Tool</h1>
                                 <nav className="hidden md:flex items-center gap-6 h-16">
                                     <a className="text-indigo-600 font-semibold border-b-2 border-indigo-600 h-16 flex items-center pt-1" href="#">Generador</a>
-                                    <a className="text-slate-500 hover:text-indigo-600 transition-colors h-16 flex items-center" href="#">My Codes</a>
-                                    <a className="text-slate-500 hover:text-indigo-600 transition-colors h-16 flex items-center" href="#">Templates</a>
                                 </nav>
                             </div>
                             <div className="flex items-center gap-2 md:gap-4 text-slate-500">
-                                <button className="w-11 h-11 flex items-center justify-center rounded-lg hover:text-indigo-600 hover:bg-slate-100 active:scale-95 transition-all">
-                                    <MaterialIcon name="settings" />
+                                <button 
+                                    onClick={() => setShowAbout(true)}
+                                    className="w-11 h-11 flex items-center justify-center rounded-lg hover:text-indigo-600 hover:bg-slate-100 active:scale-95 transition-all"
+                                    title="Acerca de"
+                                >
+                                    <MaterialIcon name="info" />
                                 </button>
-                                <button className="w-11 h-11 hidden md:flex items-center justify-center rounded-lg hover:text-indigo-600 hover:bg-slate-100 active:scale-95 transition-all">
-                                    <MaterialIcon name="help" />
-                                </button>
-                                <button className="w-11 h-11 flex items-center justify-center rounded-lg hover:text-indigo-600 hover:bg-slate-100 active:scale-95 transition-all">
-                                    <MaterialIcon name="account_circle" />
+                                <button 
+                                    onClick={() => setShowShare(true)}
+                                    className="w-11 h-11 flex items-center justify-center rounded-lg hover:text-indigo-600 hover:bg-slate-100 active:scale-95 transition-all"
+                                    title="Compartir"
+                                >
+                                    <MaterialIcon name="share" />
                                 </button>
                             </div>
                         </header>
@@ -1194,6 +1061,9 @@
                             ))}
                         </div>
                     </div>
+
+                    <AboutModal isOpen={showAbout} onClose={() => setShowAbout(false)} />
+                    <ShareModal isOpen={showShare} onClose={() => setShowShare(false)} />
                 </React.Fragment>
             );
         };
