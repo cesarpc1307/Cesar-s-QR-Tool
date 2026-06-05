@@ -349,6 +349,7 @@
             const [eyeFrameStyle, setEyeFrameStyle] = useState('square');
             const [eyePupilStyle, setEyePupilStyle] = useState('square');
             const [eyeFrameColor, setEyeFrameColor] = useState('#3525cd');
+            const [eyeColorAuto, setEyeColorAuto] = useState(true);
 
             const [fillType, setFillType] = useState('solid');
             const [qrColor, setQrColor] = useState('#3525cd');
@@ -410,12 +411,92 @@
                 }
             }, [bulkText, dotStyle, eyeFrameStyle, eyePupilStyle, eyeFrameColor, qrColor, qrColor2, bgColor, fillType, logoUrl, isTransparent, quietZone, errorLevel]);
 
+            // Auto-sync eye color with the main QR color
+            useEffect(() => {
+                if (eyeColorAuto) {
+                    setEyeFrameColor(qrColor);
+                }
+            }, [qrColor, eyeColorAuto]);
+
             const handleLogoUpload = (e) => {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = (event) => setLogoUrl(event.target.result);
                     reader.readAsDataURL(file);
+                }
+            };
+
+            // Extracts the dominant (most saturated) color from a logo data URL using canvas
+            const extractDominantColor = (dataUrl) => {
+                return new Promise((resolve) => {
+                    if (!dataUrl) { resolve(null); return; }
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = () => {
+                        const size = 80;
+                        const canvas = document.createElement('canvas');
+                        canvas.width = size;
+                        canvas.height = size;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, size, size);
+                        const data = ctx.getImageData(0, 0, size, size).data;
+
+                        // RGB -> HSL helper
+                        const rgbToHsl = (r, g, b) => {
+                            r /= 255; g /= 255; b /= 255;
+                            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+                            let h, s, l = (max + min) / 2;
+                            if (max === min) { h = s = 0; }
+                            else {
+                                const d = max - min;
+                                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                                switch (max) {
+                                    case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+                                    case g: h = ((b - r) / d + 2) / 6; break;
+                                    case b: h = ((r - g) / d + 4) / 6; break;
+                                }
+                            }
+                            return [h * 360, s, l];
+                        };
+
+                        let bestColor = null;
+                        let bestScore = -1;
+
+                        for (let i = 0; i < data.length; i += 4) {
+                            const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+                            if (a < 128) continue; // skip transparent
+                            const [h, s, l] = rgbToHsl(r, g, b);
+                            // Skip whites, near-whites, blacks and grays
+                            if (l > 0.92 || l < 0.08 || s < 0.2) continue;
+                            // Score = saturation * luminance penalty (prefer vibrant mid-tones)
+                            const score = s * (1 - Math.abs(l - 0.45));
+                            if (score > bestScore) {
+                                bestScore = score;
+                                bestColor = `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
+                            }
+                        }
+                        resolve(bestColor);
+                    };
+                    img.onerror = () => resolve(null);
+                    img.src = dataUrl;
+                });
+            };
+
+            const syncWithLogo = async () => {
+                // Always round the eye shapes (for circular logos)
+                setEyeFrameStyle('dot');
+                setEyePupilStyle('dot');
+                // Extract dominant color from logo and apply to the whole QR + eyes
+                if (logoUrl) {
+                    const color = await extractDominantColor(logoUrl);
+                    if (color) {
+                        // Apply to main QR body color
+                        setQrColor(color);
+                        // Apply to eyes too and keep them linked (auto mode ON)
+                        setEyeFrameColor(color);
+                        setEyeColorAuto(true);
+                    }
                 }
             };
 
@@ -796,43 +877,63 @@
                                                     </div>
                                                 </div>
 
-                                                {/* --- Corner Color + Sync --- */}
+                                                {/* --- Corner Color --- */}
                                                 <div className="border-t border-outline-variant pt-6">
                                                     <div className="flex items-center justify-between mb-3">
                                                         <div>
-                                                            <h3 className="font-title-md text-on-surface">Color Independiente</h3>
-                                                            <p className="text-body-md text-on-surface-variant">Color exclusivo para los ojos del QR.</p>
+                                                            <h3 className="font-title-md text-on-surface">Color de los Ojos</h3>
+                                                            <p className="text-body-md text-on-surface-variant">Color del marco y pupila del QR.</p>
                                                         </div>
-                                                        <button
-                                                            onClick={() => {
-                                                                setEyeFrameStyle('dot');
-                                                                setEyePupilStyle('dot');
-                                                            }}
-                                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-primary/40 text-primary text-xs font-semibold hover:bg-primary/5 transition-colors"
-                                                            title="Redondea las esquinas automáticamente para logos circulares"
-                                                        >
-                                                            <MaterialIcon name="sync" className="text-[16px]" />
-                                                            Sincronizar con Logo
-                                                        </button>
+                                                        {eyeColorAuto ? (
+                                                            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
+                                                                <MaterialIcon name="link" className="text-[14px]" />
+                                                                Auto
+                                                            </span>
+                                                        ) : (
+                                                            <div className="flex items-center gap-2">
+                                                                <button
+                                                                    onClick={syncWithLogo}
+                                                                    disabled={!logoUrl}
+                                                                    className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg border text-xs font-semibold transition-colors ${
+                                                                        logoUrl
+                                                                            ? 'border-primary/40 text-primary hover:bg-primary/5'
+                                                                            : 'border-slate-200 text-slate-300 cursor-not-allowed'
+                                                                    }`}
+                                                                    title={logoUrl ? 'Extraer color del logo y redondear esquinas' : 'Sube un logo primero'}
+                                                                >
+                                                                    <MaterialIcon name="colorize" className="text-[14px]" />
+                                                                    Del Logo
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => { setEyeColorAuto(true); }}
+                                                                    className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg border border-slate-200 text-slate-500 text-xs font-semibold hover:bg-slate-50 transition-colors"
+                                                                    title="Volver a sincronizar con el color principal"
+                                                                >
+                                                                    <MaterialIcon name="sync" className="text-[14px]" />
+                                                                    Restablecer
+                                                                </button>
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                    <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                                    <div className={`flex items-center gap-3 bg-slate-50 p-3 rounded-lg border transition-colors ${eyeColorAuto ? 'border-emerald-200 opacity-60 pointer-events-none' : 'border-slate-200'}`}>
                                                         <input
                                                             className="color-swatch-input"
                                                             type="color"
                                                             value={eyeFrameColor}
-                                                            onChange={(e) => setEyeFrameColor(e.target.value)}
+                                                            onChange={(e) => { setEyeColorAuto(false); setEyeFrameColor(e.target.value); }}
+                                                            disabled={eyeColorAuto}
                                                         />
                                                         <div>
                                                             <p className="text-sm font-mono text-on-surface-variant uppercase">{eyeFrameColor}</p>
-                                                            <p className="text-[10px] text-slate-400 mt-0.5">Aplica a marco y pupila</p>
+                                                            <p className="text-[10px] text-slate-400 mt-0.5">{eyeColorAuto ? 'Sincronizado con el color principal' : 'Color personalizado · Marco y pupila'}</p>
                                                         </div>
-                                                        <button
-                                                            onClick={() => setEyeFrameColor(qrColor)}
-                                                            className="ml-auto text-[10px] text-primary font-semibold hover:underline"
-                                                        >
-                                                            Igualar al cuerpo
-                                                        </button>
                                                     </div>
+                                                    {eyeColorAuto && (
+                                                        <p className="text-[11px] text-emerald-600 mt-2 flex items-center gap-1">
+                                                            <MaterialIcon name="info" className="text-[13px]" />
+                                                            El color cambia automáticamente al modificar el color en la pestaña <strong>Colores</strong>.
+                                                        </p>
+                                                    )}
                                                 </div>
 
                                             </section>
@@ -840,6 +941,7 @@
 
                                         {activeTab === TAB_COLORES && (
                                             <section className="bg-white border border-outline-variant p-6 rounded-xl shadow-sm space-y-6">
+                                                {/* --- Relleno del QR --- */}
                                                 <div>
                                                     <div className="flex items-center justify-between mb-4">
                                                         <h3 className="font-title-md text-on-surface">Relleno del QR</h3>
@@ -873,6 +975,7 @@
                                                     </div>
                                                 </div>
 
+                                                {/* --- Color Fondo --- */}
                                                 <div className="border-t border-outline-variant pt-6">
                                                     <div className="flex items-center justify-between mb-3">
                                                         <h3 className="font-title-md text-on-surface">Color Fondo</h3>
@@ -896,6 +999,75 @@
                                                                 <button key={preset} onClick={() => setBgColor(preset)} disabled={isTransparent} className="w-8 h-8 rounded-full border border-slate-300 hover:scale-110 transition-transform shadow-sm" style={{ backgroundColor: preset }} title={preset}></button>
                                                             ))}
                                                         </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* --- Color de los Ojos --- */}
+                                                <div className="border-t border-outline-variant pt-6">
+                                                    <div className="flex items-center justify-between mb-3">
+                                                        <div>
+                                                            <h3 className="font-title-md text-on-surface">Color de los Ojos</h3>
+                                                            <p className="text-body-md text-on-surface-variant">Marco y pupila de las esquinas del QR.</p>
+                                                        </div>
+                                                        <div className="flex items-center gap-2">
+                                                            {/* Sincronizar con Logo button */}
+                                                            <button
+                                                                onClick={syncWithLogo}
+                                                                disabled={!logoUrl}
+                                                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-colors ${
+                                                                    logoUrl
+                                                                        ? 'border-primary/40 text-primary hover:bg-primary/5'
+                                                                        : 'border-slate-200 text-slate-300 cursor-not-allowed'
+                                                                }`}
+                                                                title={logoUrl ? 'Extraer color dominante del logo y redondear esquinas' : 'Sube un logo primero para sincronizar'}
+                                                            >
+                                                                <MaterialIcon name="colorize" className="text-[14px]" />
+                                                                <span className="hidden sm:inline">Sincronizar con Logo</span>
+                                                                <span className="sm:hidden">Con Logo</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Auto / Manual toggle */}
+                                                    <div className="flex items-center gap-3 mb-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                                        <div className="flex-1">
+                                                            <p className="text-sm font-semibold text-slate-700">Modo automático</p>
+                                                            <p className="text-[11px] text-slate-500 mt-0.5">Los ojos siguen el color principal del QR</p>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => {
+                                                                const next = !eyeColorAuto;
+                                                                setEyeColorAuto(next);
+                                                                if (next) setEyeFrameColor(qrColor);
+                                                            }}
+                                                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${eyeColorAuto ? 'bg-emerald-500' : 'bg-slate-300'}`}
+                                                            title={eyeColorAuto ? 'Desactivar sincronización automática' : 'Activar sincronización automática'}
+                                                        >
+                                                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200 ${eyeColorAuto ? 'translate-x-6' : 'translate-x-1'}`} />
+                                                        </button>
+                                                    </div>
+
+                                                    {/* Color picker — disabled when auto */}
+                                                    <div className={`flex items-center gap-3 bg-slate-50 p-3 rounded-lg border transition-all duration-300 ${eyeColorAuto ? 'border-emerald-200 opacity-50 pointer-events-none' : 'border-slate-200'}`}>
+                                                        <input
+                                                            className="color-swatch-input"
+                                                            type="color"
+                                                            value={eyeFrameColor}
+                                                            onChange={(e) => { setEyeColorAuto(false); setEyeFrameColor(e.target.value); }}
+                                                            disabled={eyeColorAuto}
+                                                        />
+                                                        <div>
+                                                            <p className="text-sm font-mono text-on-surface-variant uppercase">{eyeFrameColor}</p>
+                                                            <p className="text-[10px] text-slate-400 mt-0.5">{eyeColorAuto ? 'Sincronizado automáticamente' : 'Color personalizado · Marco y pupila'}</p>
+                                                        </div>
+                                                        {!eyeColorAuto && (
+                                                            <button
+                                                                onClick={() => { setEyeColorAuto(true); setEyeFrameColor(qrColor); }}
+                                                                className="ml-auto text-[10px] text-primary font-semibold hover:underline whitespace-nowrap"
+                                                            >
+                                                                Igualar al cuerpo
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </section>
