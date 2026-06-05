@@ -18,7 +18,7 @@
 
     <!-- Tailwind CSS Core -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    
+
     <!-- Configuración Externa de Tailwind -->
     <script src="tailwind.config.js"></script>
 
@@ -26,7 +26,8 @@
     <link rel="stylesheet" href="styles.css" />
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
 
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -39,7 +40,8 @@
     <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
 </head>
 
 <body class="font-body-md text-on-background">
@@ -95,12 +97,12 @@
                                     <MaterialIcon name="close" className="text-slate-400" />
                                 </button>
                             </div>
-                            
+
                             <div className="space-y-4">
                                 <p className="text-slate-600 text-sm leading-relaxed">
                                     <strong className="text-slate-900">César's QR Tool</strong> es una herramienta segura, privada y de uso libre diseñada para facilitar la creación de códigos QR con diseño premium.
                                 </p>
-                                
+
                                 <div className="grid grid-cols-1 gap-3">
                                     <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
                                         <MaterialIcon name="lock" className="text-indigo-500 text-xl" />
@@ -134,7 +136,7 @@
                                 </div>
                             </div>
 
-                            <button 
+                            <button
                                 onClick={onClose}
                                 className="w-full mt-8 py-3.5 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 active:scale-[0.98] transition-all shadow-lg shadow-indigo-200"
                             >
@@ -182,10 +184,10 @@
                                     <MaterialIcon name="close" className="text-slate-400" />
                                 </button>
                             </div>
-                            
+
                             <div className="space-y-3">
                                 {/* Copy Link */}
-                                <button 
+                                <button
                                     onClick={handleCopy}
                                     className="w-full flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl hover:border-indigo-200 hover:bg-indigo-50 transition-all group"
                                 >
@@ -202,7 +204,7 @@
                                 </button>
 
                                 {/* WhatsApp */}
-                                <button 
+                                <button
                                     onClick={shareWhatsApp}
                                     className="w-full flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl hover:border-green-200 hover:bg-green-50 transition-all group"
                                 >
@@ -220,7 +222,7 @@
 
                                 <div className="grid grid-cols-2 gap-3 mt-4">
                                     {/* Gmail */}
-                                    <button 
+                                    <button
                                         onClick={shareGmail}
                                         className="flex flex-col items-center gap-2 p-4 bg-slate-50 border border-slate-100 rounded-2xl hover:border-red-200 hover:bg-red-50 transition-all group"
                                     >
@@ -231,7 +233,7 @@
                                     </button>
 
                                     {/* Outlook */}
-                                    <button 
+                                    <button
                                         onClick={shareOutlook}
                                         className="flex flex-col items-center gap-2 p-4 bg-slate-50 border border-slate-100 rounded-2xl hover:border-blue-200 hover:bg-blue-50 transition-all group"
                                     >
@@ -338,6 +340,76 @@
 
         const App = () => {
             const [activeTab, setActiveTab] = useState(TAB_DATOS);
+
+            // Helpers for Color Selector copy/paste & RGB display
+            const cssColorToHex = (str) => {
+                if (!str) return null;
+                let clean = str.trim();
+                // If it looks like raw rgb numbers "255, 0, 0", wrap it in rgb()
+                if (/^\d{1,3},\s*\d{1,3},\s*\d{1,3}$/.test(clean)) {
+                    clean = `rgb(${clean})`;
+                }
+                // If it looks like hex numbers without '#', e.g. "3525cd" or "fff", prepend '#'
+                if (/^[0-9A-Fa-f]{3}$/.test(clean) || /^[0-9A-Fa-f]{6}$/.test(clean)) {
+                    clean = '#' + clean;
+                }
+
+                try {
+                    const dummy = document.createElement('div');
+                    dummy.style.color = clean;
+                    document.body.appendChild(dummy);
+                    const computed = window.getComputedStyle(dummy).color;
+                    document.body.removeChild(dummy);
+
+                    const match = computed.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)$/);
+                    if (match) {
+                        const r = parseInt(match[1], 10);
+                        const g = parseInt(match[2], 10);
+                        const b = parseInt(match[3], 10);
+                        return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+                    }
+                } catch (e) {
+                    // Fallback
+                }
+                return null;
+            };
+
+            const getValidHexForPicker = (colorStr, fallback = '#000000') => {
+                const hex = cssColorToHex(colorStr);
+                return hex || fallback;
+            };
+
+            const hexToRgbString = (hex) => {
+                if (!hex) return '';
+                let cleanHex = hex.trim();
+                const resolvedHex = cssColorToHex(cleanHex);
+                if (resolvedHex) {
+                    cleanHex = resolvedHex;
+                }
+                if (!cleanHex.startsWith('#')) {
+                    cleanHex = '#' + cleanHex;
+                }
+                const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+                cleanHex = cleanHex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+                
+                const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(cleanHex);
+                return result ? `rgb(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)})` : '';
+            };
+
+            const handleColorBlur = (value, setter, fallback = '#000000') => {
+                const hex = cssColorToHex(value);
+                if (hex) {
+                    setter(hex);
+                } else {
+                    setter(fallback);
+                }
+            };
+
+            const handleColorKeyDown = (e) => {
+                if (e.key === 'Enter') {
+                    e.target.blur();
+                }
+            };
             // 'config' | 'preview' — controls which panel is visible on mobile
             const [mobileView, setMobileView] = useState('config');
             const [showAbout, setShowAbout] = useState(false);
@@ -464,7 +536,7 @@
                         let bestScore = -1;
 
                         for (let i = 0; i < data.length; i += 4) {
-                            const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+                            const r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3];
                             if (a < 128) continue; // skip transparent
                             const [h, s, l] = rgbToHsl(r, g, b);
                             // Skip whites, near-whites, blacks and grays
@@ -473,7 +545,7 @@
                             const score = s * (1 - Math.abs(l - 0.45));
                             if (score > bestScore) {
                                 bestScore = score;
-                                bestColor = `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
+                                bestColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
                             }
                         }
                         resolve(bestColor);
@@ -586,14 +658,14 @@
                                 </nav>
                             </div>
                             <div className="flex items-center gap-2 md:gap-4 text-slate-500">
-                                <button 
+                                <button
                                     onClick={() => setShowAbout(true)}
                                     className="w-11 h-11 flex items-center justify-center rounded-lg hover:text-indigo-600 hover:bg-slate-100 active:scale-95 transition-all"
                                     title="Acerca de"
                                 >
                                     <MaterialIcon name="info" />
                                 </button>
-                                <button 
+                                <button
                                     onClick={() => setShowShare(true)}
                                     className="w-11 h-11 flex items-center justify-center rounded-lg hover:text-indigo-600 hover:bg-slate-100 active:scale-95 transition-all"
                                     title="Compartir"
@@ -877,65 +949,6 @@
                                                     </div>
                                                 </div>
 
-                                                {/* --- Corner Color --- */}
-                                                <div className="border-t border-outline-variant pt-6">
-                                                    <div className="flex items-center justify-between mb-3">
-                                                        <div>
-                                                            <h3 className="font-title-md text-on-surface">Color de los Ojos</h3>
-                                                            <p className="text-body-md text-on-surface-variant">Color del marco y pupila del QR.</p>
-                                                        </div>
-                                                        {eyeColorAuto ? (
-                                                            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
-                                                                <MaterialIcon name="link" className="text-[14px]" />
-                                                                Auto
-                                                            </span>
-                                                        ) : (
-                                                            <div className="flex items-center gap-2">
-                                                                <button
-                                                                    onClick={syncWithLogo}
-                                                                    disabled={!logoUrl}
-                                                                    className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg border text-xs font-semibold transition-colors ${
-                                                                        logoUrl
-                                                                            ? 'border-primary/40 text-primary hover:bg-primary/5'
-                                                                            : 'border-slate-200 text-slate-300 cursor-not-allowed'
-                                                                    }`}
-                                                                    title={logoUrl ? 'Extraer color del logo y redondear esquinas' : 'Sube un logo primero'}
-                                                                >
-                                                                    <MaterialIcon name="colorize" className="text-[14px]" />
-                                                                    Del Logo
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => { setEyeColorAuto(true); }}
-                                                                    className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg border border-slate-200 text-slate-500 text-xs font-semibold hover:bg-slate-50 transition-colors"
-                                                                    title="Volver a sincronizar con el color principal"
-                                                                >
-                                                                    <MaterialIcon name="sync" className="text-[14px]" />
-                                                                    Restablecer
-                                                                </button>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                    <div className={`flex items-center gap-3 bg-slate-50 p-3 rounded-lg border transition-colors ${eyeColorAuto ? 'border-emerald-200 opacity-60 pointer-events-none' : 'border-slate-200'}`}>
-                                                        <input
-                                                            className="color-swatch-input"
-                                                            type="color"
-                                                            value={eyeFrameColor}
-                                                            onChange={(e) => { setEyeColorAuto(false); setEyeFrameColor(e.target.value); }}
-                                                            disabled={eyeColorAuto}
-                                                        />
-                                                        <div>
-                                                            <p className="text-sm font-mono text-on-surface-variant uppercase">{eyeFrameColor}</p>
-                                                            <p className="text-[10px] text-slate-400 mt-0.5">{eyeColorAuto ? 'Sincronizado con el color principal' : 'Color personalizado · Marco y pupila'}</p>
-                                                        </div>
-                                                    </div>
-                                                    {eyeColorAuto && (
-                                                        <p className="text-[11px] text-emerald-600 mt-2 flex items-center gap-1">
-                                                            <MaterialIcon name="info" className="text-[13px]" />
-                                                            El color cambia automáticamente al modificar el color en la pestaña <strong>Colores</strong>.
-                                                        </p>
-                                                    )}
-                                                </div>
-
                                             </section>
                                         )}
 
@@ -958,17 +971,67 @@
                                                     </div>
                                                     <div className="flex flex-col gap-4">
                                                         <label className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{fillType === 'gradient' ? 'Primario' : 'Frontal'}</label>
-                                                        <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
-                                                            <input className="color-swatch-input" type="color" value={qrColor} onChange={(e) => setQrColor(e.target.value)} />
-                                                            <span className="text-sm font-mono text-on-surface-variant uppercase">{qrColor}</span>
+                                                        <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                                            <div className="flex items-center gap-3">
+                                                                <input 
+                                                                    className="color-swatch-input flex-shrink-0" 
+                                                                    type="color" 
+                                                                    value={getValidHexForPicker(qrColor)} 
+                                                                    onChange={(e) => setQrColor(e.target.value)} 
+                                                                />
+                                                                <div className="flex flex-col">
+                                                                    <input
+                                                                        type="text"
+                                                                        className="bg-white border border-slate-300 rounded-lg px-2 py-1 text-sm font-mono text-slate-800 uppercase focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-sm w-28"
+                                                                        value={qrColor}
+                                                                        onChange={(e) => setQrColor(e.target.value)}
+                                                                        onBlur={(e) => handleColorBlur(e.target.value, setQrColor, '#3525cd')}
+                                                                        onKeyDown={handleColorKeyDown}
+                                                                        placeholder="#3525cd"
+                                                                    />
+                                                                    <span className="text-[10px] text-slate-400 font-mono mt-0.5">{hexToRgbString(qrColor)}</span>
+                                                                </div>
+                                                            </div>
+                                                            <button
+                                                                onClick={() => navigator.clipboard.writeText(qrColor)}
+                                                                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-white active:scale-95 transition-all shadow-sm border border-transparent hover:border-slate-200"
+                                                                title="Copiar Hexadecimal"
+                                                            >
+                                                                <MaterialIcon name="content_copy" className="text-[16px]" />
+                                                            </button>
                                                         </div>
 
                                                         {fillType === 'gradient' && (
                                                             <React.Fragment>
                                                                 <label className="text-xs font-semibold text-slate-500 uppercase tracking-widest mt-2">Secundario</label>
-                                                                <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
-                                                                    <input className="color-swatch-input" type="color" value={qrColor2} onChange={(e) => setQrColor2(e.target.value)} />
-                                                                    <span className="text-sm font-mono text-on-surface-variant uppercase">{qrColor2}</span>
+                                                                <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                                                    <div className="flex items-center gap-3">
+                                                                        <input 
+                                                                            className="color-swatch-input flex-shrink-0" 
+                                                                            type="color" 
+                                                                            value={getValidHexForPicker(qrColor2)} 
+                                                                            onChange={(e) => setQrColor2(e.target.value)} 
+                                                                        />
+                                                                        <div className="flex flex-col">
+                                                                            <input
+                                                                                type="text"
+                                                                                className="bg-white border border-slate-300 rounded-lg px-2 py-1 text-sm font-mono text-slate-800 uppercase focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-sm w-28"
+                                                                                value={qrColor2}
+                                                                                onChange={(e) => setQrColor2(e.target.value)}
+                                                                                onBlur={(e) => handleColorBlur(e.target.value, setQrColor2, '#39b8fd')}
+                                                                                onKeyDown={handleColorKeyDown}
+                                                                                placeholder="#39b8fd"
+                                                                            />
+                                                                            <span className="text-[10px] text-slate-400 font-mono mt-0.5">{hexToRgbString(qrColor2)}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <button
+                                                                        onClick={() => navigator.clipboard.writeText(qrColor2)}
+                                                                        className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-white active:scale-95 transition-all shadow-sm border border-transparent hover:border-slate-200"
+                                                                        title="Copiar Hexadecimal"
+                                                                    >
+                                                                        <MaterialIcon name="content_copy" className="text-[16px]" />
+                                                                    </button>
                                                                 </div>
                                                             </React.Fragment>
                                                         )}
@@ -990,9 +1053,37 @@
                                                         </label>
                                                     </div>
                                                     <div className={`flex flex-col gap-4 transition-opacity duration-300 ${isTransparent ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
-                                                        <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
-                                                            <input className="color-swatch-input" type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} disabled={isTransparent} />
-                                                            <span className="text-sm font-mono text-on-surface-variant uppercase">{bgColor}</span>
+                                                        <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                                            <div className="flex items-center gap-3">
+                                                                <input 
+                                                                    className="color-swatch-input flex-shrink-0" 
+                                                                    type="color" 
+                                                                    value={getValidHexForPicker(bgColor)} 
+                                                                    onChange={(e) => setBgColor(e.target.value)} 
+                                                                    disabled={isTransparent}
+                                                                />
+                                                                <div className="flex flex-col">
+                                                                    <input
+                                                                        type="text"
+                                                                        className="bg-white border border-slate-300 rounded-lg px-2 py-1 text-sm font-mono text-slate-800 uppercase focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-sm w-28"
+                                                                        value={bgColor}
+                                                                        onChange={(e) => setBgColor(e.target.value)}
+                                                                        onBlur={(e) => handleColorBlur(e.target.value, setBgColor, '#ffffff')}
+                                                                        onKeyDown={handleColorKeyDown}
+                                                                        disabled={isTransparent}
+                                                                        placeholder="#ffffff"
+                                                                    />
+                                                                    <span className="text-[10px] text-slate-400 font-mono mt-0.5">{hexToRgbString(bgColor)}</span>
+                                                                </div>
+                                                            </div>
+                                                            <button
+                                                                onClick={() => navigator.clipboard.writeText(bgColor)}
+                                                                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-white active:scale-95 transition-all shadow-sm border border-transparent hover:border-slate-200"
+                                                                disabled={isTransparent}
+                                                                title="Copiar Hexadecimal"
+                                                            >
+                                                                <MaterialIcon name="content_copy" className="text-[16px]" />
+                                                            </button>
                                                         </div>
                                                         <div className="flex gap-3 mt-1">
                                                             {['#ffffff', '#f8fafc', '#fefce8', '#f0fdf4'].map(preset => (
@@ -1014,11 +1105,10 @@
                                                             <button
                                                                 onClick={syncWithLogo}
                                                                 disabled={!logoUrl}
-                                                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-colors ${
-                                                                    logoUrl
+                                                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-colors ${logoUrl
                                                                         ? 'border-primary/40 text-primary hover:bg-primary/5'
                                                                         : 'border-slate-200 text-slate-300 cursor-not-allowed'
-                                                                }`}
+                                                                    }`}
                                                                 title={logoUrl ? 'Extraer color dominante del logo y redondear esquinas' : 'Sube un logo primero para sincronizar'}
                                                             >
                                                                 <MaterialIcon name="colorize" className="text-[14px]" />
@@ -1048,26 +1138,48 @@
                                                     </div>
 
                                                     {/* Color picker — disabled when auto */}
-                                                    <div className={`flex items-center gap-3 bg-slate-50 p-3 rounded-lg border transition-all duration-300 ${eyeColorAuto ? 'border-emerald-200 opacity-50 pointer-events-none' : 'border-slate-200'}`}>
-                                                        <input
-                                                            className="color-swatch-input"
-                                                            type="color"
-                                                            value={eyeFrameColor}
-                                                            onChange={(e) => { setEyeColorAuto(false); setEyeFrameColor(e.target.value); }}
-                                                            disabled={eyeColorAuto}
-                                                        />
-                                                        <div>
-                                                            <p className="text-sm font-mono text-on-surface-variant uppercase">{eyeFrameColor}</p>
-                                                            <p className="text-[10px] text-slate-400 mt-0.5">{eyeColorAuto ? 'Sincronizado automáticamente' : 'Color personalizado · Marco y pupila'}</p>
+                                                    <div className={`flex items-center justify-between bg-slate-50 p-3 rounded-lg border transition-all duration-300 ${eyeColorAuto ? 'border-emerald-200 opacity-60 pointer-events-none' : 'border-slate-200'}`}>
+                                                        <div className="flex items-center gap-3">
+                                                            <input
+                                                                className="color-swatch-input flex-shrink-0"
+                                                                type="color"
+                                                                value={getValidHexForPicker(eyeFrameColor)}
+                                                                onChange={(e) => { setEyeColorAuto(false); setEyeFrameColor(e.target.value); }}
+                                                                disabled={eyeColorAuto}
+                                                            />
+                                                            <div className="flex flex-col">
+                                                                <input
+                                                                    type="text"
+                                                                    className="bg-white border border-slate-300 rounded-lg px-2 py-1 text-sm font-mono text-slate-800 uppercase focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-sm w-28"
+                                                                    value={eyeFrameColor}
+                                                                    onChange={(e) => { setEyeColorAuto(false); setEyeFrameColor(e.target.value); }}
+                                                                    onBlur={(e) => handleColorBlur(e.target.value, setEyeFrameColor, qrColor)}
+                                                                    onKeyDown={handleColorKeyDown}
+                                                                    disabled={eyeColorAuto}
+                                                                    placeholder={qrColor}
+                                                                />
+                                                                <span className="text-[10px] text-slate-400 font-mono mt-0.5">
+                                                                    {eyeColorAuto ? 'Sincronizado automáticamente' : hexToRgbString(eyeFrameColor)}
+                                                                </span>
+                                                            </div>
                                                         </div>
-                                                        {!eyeColorAuto && (
+                                                        <div className="flex items-center gap-2">
+                                                            {!eyeColorAuto && (
+                                                                <button
+                                                                    onClick={() => { setEyeColorAuto(true); setEyeFrameColor(qrColor); }}
+                                                                    className="text-[10px] text-primary font-semibold hover:underline whitespace-nowrap"
+                                                                >
+                                                                    Igualar al cuerpo
+                                                                </button>
+                                                            )}
                                                             <button
-                                                                onClick={() => { setEyeColorAuto(true); setEyeFrameColor(qrColor); }}
-                                                                className="ml-auto text-[10px] text-primary font-semibold hover:underline whitespace-nowrap"
+                                                                onClick={() => navigator.clipboard.writeText(eyeFrameColor)}
+                                                                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-white active:scale-95 transition-all shadow-sm border border-transparent hover:border-slate-200"
+                                                                title="Copiar Hexadecimal"
                                                             >
-                                                                Igualar al cuerpo
+                                                                <MaterialIcon name="content_copy" className="text-[16px]" />
                                                             </button>
-                                                        )}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </section>
