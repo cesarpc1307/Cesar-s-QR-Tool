@@ -90,7 +90,7 @@
                                     </div>
                                     <div>
                                         <h2 className="text-xl font-extrabold text-slate-900">Acerca de la Herramienta</h2>
-                                        <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest">Versión 1.1.0</p>
+                                        <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest">Versión 1.2.0</p>
                                     </div>
                                 </div>
                                 <button onClick={onClose} className="p-2 rounded-full hover:bg-slate-100 transition-colors">
@@ -297,10 +297,46 @@
             }, [url, logoUrl, qrColor, qrColor2, bgColor, fillType, dotStyle, eyeFrameStyle, eyePupilStyle, eyeFrameColor, isTransparent, qrSize, quietZone, errorLevel]);
 
             const handleDownload = () => {
-                if (imgSrc) {
+                if (!imgSrc) return;
+                const filename = `qr_${(labelContent || 'code').replace(/[^a-zA-Z0-9]/g, '_').substring(0, 40)}.png`;
+
+                // If label is shown and exists, compose a new canvas with QR + label text below
+                if (showLabel && labelContent) {
+                    const img = new Image();
+                    img.onload = () => {
+                        const padding = 20;
+                        const fontSize = Math.round(img.width * 0.045);
+                        const labelAreaHeight = fontSize + padding * 2;
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height + labelAreaHeight;
+
+                        const ctx = canvas.getContext('2d');
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(img, 0, 0);
+
+                        ctx.fillStyle = '#1e293b';
+                        ctx.font = `bold ${fontSize}px Inter, Arial, sans-serif`;
+                        ctx.textAlign = 'center';
+                        ctx.fillText(labelContent, canvas.width / 2, img.height + padding + fontSize * 0.8);
+
+                        canvas.toBlob(blob => {
+                            const url = URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.download = filename;
+                            link.click();
+                            setTimeout(() => URL.revokeObjectURL(url), 1000);
+                        }, 'image/png');
+                    };
+                    img.src = imgSrc;
+                } else {
+                    // No label — download the QR image directly
                     const link = document.createElement('a');
                     link.href = imgSrc;
-                    link.download = `qr_${labelContent || 'code'}.png`;
+                    link.download = filename;
                     link.click();
                 }
             };
@@ -414,23 +450,64 @@
             const [mobileView, setMobileView] = useState('config');
             const [showAbout, setShowAbout] = useState(false);
             const [showShare, setShowShare] = useState(false);
-            const [bulkText, setBulkText] = useState("https://github.com/cesarpc1307/Cesar-s-QR-Tool\nhttps://example.com");
-            const [appliedBulkText, setAppliedBulkText] = useState("https://github.com/cesarpc1307/Cesar-s-QR-Tool\nhttps://example.com");
+            const [datosMode, setDatosMode] = useState('single'); // 'single', 'whatsapp', 'bulk'
+
+            // States for Single Link
+            const [singleUrl, setSingleUrl] = useState("https://github.com/cesarpc1307/Cesar-s-QR-Tool");
+            const [singleHasLabel, setSingleHasLabel] = useState(false);
+            const [singleLabel, setSingleLabel] = useState('');
+
+            // States for WhatsApp
+            const [waPhone, setWaPhone] = useState('');
+            const [waHasMessage, setWaHasMessage] = useState(false);
+            const [waMessage, setWaMessage] = useState('');
+            const [waHasLabel, setWaHasLabel] = useState(false);
+            const [waLabel, setWaLabel] = useState('');
+
+            // Backing state for Bulk mode list
+            const [bulkTextVal, setBulkTextVal] = useState("https://github.com/cesarpc1307/Cesar-s-QR-Tool\nhttps://example.com");
+
+            const [bulkText, setBulkText] = useState("https://github.com/cesarpc1307/Cesar-s-QR-Tool");
+            const [appliedBulkText, setAppliedBulkText] = useState("https://github.com/cesarpc1307/Cesar-s-QR-Tool");
+            const [showLabel, setShowLabel] = useState(false);
+            const [appliedShowLabel, setAppliedShowLabel] = useState(false);
+
+            useEffect(() => {
+                if (datosMode === 'single') {
+                    const urlPart = singleUrl.trim() || 'https://example.com';
+                    const labelPart = (singleHasLabel && singleLabel.trim()) ? ` ${singleLabel.trim()}` : '';
+                    setBulkText(`${urlPart}${labelPart}`);
+                    setShowLabel(singleHasLabel);
+                } else if (datosMode === 'whatsapp') {
+                    const cleanPhone = waPhone.replace(/[^\d]/g, '');
+                    let url = 'https://wa.me/';
+                    if (cleanPhone) {
+                        url += cleanPhone;
+                    }
+                    if (waHasMessage && waMessage.trim()) {
+                        url += `?text=${encodeURIComponent(waMessage.trim())}`;
+                    }
+                    const labelPart = (waHasLabel && waLabel.trim()) ? ` ${waLabel.trim()}` : '';
+                    setBulkText(`${url}${labelPart}`);
+                    setShowLabel(waHasLabel);
+                } else if (datosMode === 'bulk') {
+                    setBulkText(bulkTextVal);
+                }
+            }, [datosMode, singleUrl, singleHasLabel, singleLabel, waPhone, waHasMessage, waMessage, waHasLabel, waLabel, bulkTextVal]);
+
 
             const [dotStyle, setDotStyle] = useState('square');
             const [eyeFrameStyle, setEyeFrameStyle] = useState('square');
             const [eyePupilStyle, setEyePupilStyle] = useState('square');
-            const [eyeFrameColor, setEyeFrameColor] = useState('#3525cd');
+            const [eyeFrameColor, setEyeFrameColor] = useState('#000000');
             const [eyeColorAuto, setEyeColorAuto] = useState(true);
 
             const [fillType, setFillType] = useState('solid');
-            const [qrColor, setQrColor] = useState('#3525cd');
+            const [qrColor, setQrColor] = useState('#000000');
             const [qrColor2, setQrColor2] = useState('#39b8fd');
             const [bgColor, setBgColor] = useState('#ffffff');
 
             const [logoUrl, setLogoUrl] = useState(null);
-            const [showLabel, setShowLabel] = useState(true);
-            const [appliedShowLabel, setAppliedShowLabel] = useState(true);
             const [isTransparent, setIsTransparent] = useState(false);
             const [printColumns, setPrintColumns] = useState(4);
             const [qrSize, setQrSize] = useState(300);
@@ -834,39 +911,208 @@
                                             <section className="bg-white border border-outline-variant p-4 md:p-6 rounded-xl shadow-sm">
                                                 <div className="mb-4">
                                                     <h3 className="font-title-md text-on-surface">Contenido</h3>
-                                                    <p className="text-body-md text-on-surface-variant">El destino de tu código QR al ser escaneado.</p>
+                                                    <p className="text-body-md text-on-surface-variant">Elige el tipo de entrada de datos para tus códigos QR.</p>
                                                 </div>
-                                                <textarea
-                                                    className="w-full h-48 md:h-72 px-md py-base border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all font-mono text-sm leading-relaxed whitespace-pre-wrap"
-                                                    placeholder={"https://example.com/url-1 Mi Etiqueta 1\nhttps://example.com/url-2 SinEtiqueta"}
-                                                    value={bulkText}
-                                                    onChange={(e) => setBulkText(e.target.value)}
-                                                ></textarea>
 
-                                                <div className="mt-6 pt-4 border-t border-slate-100">
-                                                    <label className="flex items-center gap-3 cursor-pointer group min-h-[44px]">
-                                                        <input
-                                                            type="checkbox"
-                                                            className="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary transition-all cursor-pointer flex-shrink-0"
-                                                            checked={showLabel}
-                                                            onChange={(e) => setShowLabel(e.target.checked)}
-                                                        />
-                                                        <div>
-                                                            <span className="text-sm font-semibold text-slate-700 group-hover:text-primary transition-colors">Mostrar Etiqueta</span>
-                                                            <p className="text-[11px] text-slate-500 mt-0.5">Si se activa, el texto después del espacio en cada línea se mostrará debajo del QR.</p>
-                                                        </div>
-                                                    </label>
+                                                {/* Modern content type selector buttons */}
+                                                <div className="grid grid-cols-3 gap-2 p-1.5 bg-slate-100/80 rounded-2xl mb-6">
+                                                    <button
+                                                        onClick={() => setDatosMode('single')}
+                                                        className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-xl transition-all duration-200 ${datosMode === 'single' ? 'bg-white text-indigo-600 shadow-sm font-semibold' : 'text-slate-500 hover:text-slate-800'}`}
+                                                    >
+                                                        <span className="material-symbols-outlined text-lg mb-0.5">link</span>
+                                                        <span className="text-[10px] md:text-[11px] leading-tight select-none">Enlace Web</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setDatosMode('whatsapp')}
+                                                        className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-xl transition-all duration-200 ${datosMode === 'whatsapp' ? 'bg-white text-emerald-600 shadow-sm font-semibold' : 'text-slate-500 hover:text-slate-800'}`}
+                                                    >
+                                                        <span className="material-symbols-outlined text-lg mb-0.5">chat</span>
+                                                        <span className="text-[10px] md:text-[11px] leading-tight select-none">WhatsApp</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setDatosMode('bulk')}
+                                                        className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-xl transition-all duration-200 ${datosMode === 'bulk' ? 'bg-white text-indigo-600 shadow-sm font-semibold' : 'text-slate-500 hover:text-slate-800'}`}
+                                                    >
+                                                        <span className="material-symbols-outlined text-lg mb-0.5">view_list</span>
+                                                        <span className="text-[10px] md:text-[11px] leading-tight select-none">Lista Masiva</span>
+                                                    </button>
                                                 </div>
+
+                                                {/* Render form section dynamically based on selected type */}
+                                                {datosMode === 'single' && (
+                                                    <div className="space-y-4 animate-in fade-in duration-200">
+                                                        <div>
+                                                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Dirección URL</label>
+                                                            <div className="relative">
+                                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                                                    <span className="material-symbols-outlined text-lg">link</span>
+                                                                </div>
+                                                                <input
+                                                                    type="text"
+                                                                    className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-sm"
+                                                                    placeholder="https://ejemplo.com"
+                                                                    value={singleUrl}
+                                                                    onChange={(e) => setSingleUrl(e.target.value)}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                                                            <label className="flex items-center gap-3 cursor-pointer group min-h-[44px]">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 transition-all cursor-pointer flex-shrink-0"
+                                                                    checked={singleHasLabel}
+                                                                    onChange={(e) => setSingleHasLabel(e.target.checked)}
+                                                                />
+                                                                <div>
+                                                                    <span className="text-sm font-semibold text-slate-700 group-hover:text-indigo-600 transition-colors">Añadir etiqueta de texto</span>
+                                                                    <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Muestra un texto de referencia debajo del código QR.</p>
+                                                                </div>
+                                                            </label>
+                                                            
+                                                            {singleHasLabel && (
+                                                                <div className="mt-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                                                                    <input
+                                                                        type="text"
+                                                                        className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-sm"
+                                                                        placeholder="Escribe la etiqueta (ej. Mi Sitio Web)"
+                                                                        value={singleLabel}
+                                                                        onChange={(e) => setSingleLabel(e.target.value)}
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {datosMode === 'whatsapp' && (
+                                                    <div className="space-y-4 animate-in fade-in duration-200">
+                                                        <div>
+                                                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Número de Teléfono</label>
+                                                            <div className="relative">
+                                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                                                    <span className="material-symbols-outlined text-lg">call</span>
+                                                                </div>
+                                                                <input
+                                                                    type="text"
+                                                                    className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-sm font-mono"
+                                                                    placeholder="Ej: 50499999999"
+                                                                    value={waPhone}
+                                                                    onChange={(e) => setWaPhone(e.target.value)}
+                                                                />
+                                                            </div>
+                                                            <p className="text-[10px] text-slate-400 mt-1.5 pl-1 leading-normal">
+                                                                Incluye código de país sin signo + ni espacios. Ej: 504 para Honduras + número de celular.
+                                                            </p>
+                                                        </div>
+
+                                                        <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 space-y-3">
+                                                            <label className="flex items-center gap-3 cursor-pointer group min-h-[44px]">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="w-5 h-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 transition-all cursor-pointer flex-shrink-0"
+                                                                    checked={waHasMessage}
+                                                                    onChange={(e) => setWaHasMessage(e.target.checked)}
+                                                                />
+                                                                <div>
+                                                                    <span className="text-sm font-semibold text-slate-700 group-hover:text-emerald-600 transition-colors">Mensaje personalizado</span>
+                                                                    <p className="text-[11px] text-slate-500 mt-0.5 font-medium">El texto se escribirá automáticamente cuando escaneen el QR.</p>
+                                                                </div>
+                                                            </label>
+
+                                                            {waHasMessage && (
+                                                                <div className="animate-in fade-in slide-in-from-top-1 duration-200 space-y-1.5">
+                                                                    <textarea
+                                                                        className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-sm h-20 resize-none"
+                                                                        placeholder="Escribe el mensaje personalizado aquí..."
+                                                                        maxLength={300}
+                                                                        value={waMessage}
+                                                                        onChange={(e) => setWaMessage(e.target.value.slice(0, 300))}
+                                                                    ></textarea>
+                                                                    <div className="flex items-center justify-between px-1">
+                                                                        <p className="text-[10px] text-slate-400 leading-normal">
+                                                                            Mensajes cortos generan QRs más fáciles de escanear.
+                                                                        </p>
+                                                                        <span className={`text-[11px] font-bold tabular-nums transition-colors ${waMessage.length >= 290 ? 'text-red-500' : waMessage.length >= 250 ? 'text-amber-500' : 'text-slate-400'}`}>
+                                                                            {waMessage.length}/300
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+
+                                                        <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                                                            <label className="flex items-center gap-3 cursor-pointer group min-h-[44px]">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="w-5 h-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 transition-all cursor-pointer flex-shrink-0"
+                                                                    checked={waHasLabel}
+                                                                    onChange={(e) => setWaHasLabel(e.target.checked)}
+                                                                />
+                                                                <div>
+                                                                    <span className="text-sm font-semibold text-slate-700 group-hover:text-emerald-600 transition-colors">Añadir etiqueta de texto</span>
+                                                                    <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Muestra un texto debajo del QR.</p>
+                                                                </div>
+                                                            </label>
+                                                            
+                                                            {waHasLabel && (
+                                                                <div className="mt-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                                                                    <input
+                                                                        type="text"
+                                                                        className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-sm"
+                                                                        placeholder="Escribe la etiqueta (ej. WhatsApp César)"
+                                                                        value={waLabel}
+                                                                        onChange={(e) => setWaLabel(e.target.value)}
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {datosMode === 'bulk' && (
+                                                    <div className="space-y-4 animate-in fade-in duration-200">
+                                                        <div>
+                                                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Lista de Enlaces &amp; Etiquetas</label>
+                                                            <textarea
+                                                                className="w-full h-48 md:h-64 px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all font-mono text-sm leading-relaxed whitespace-pre-wrap"
+                                                                placeholder={"https://ejemplo.com/url-1 Mi Etiqueta 1\nhttps://ejemplo.com/url-2 SinEtiqueta"}
+                                                                value={bulkTextVal}
+                                                                onChange={(e) => setBulkTextVal(e.target.value)}
+                                                            ></textarea>
+                                                            <p className="text-[10px] text-slate-400 mt-1 pl-1 font-medium leading-normal">
+                                                                Pon un enlace por línea. Opcionalmente añade un espacio y el nombre de la etiqueta.
+                                                            </p>
+                                                        </div>
+
+                                                        <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 font-medium">
+                                                            <label className="flex items-center gap-3 cursor-pointer group min-h-[44px]">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 transition-all cursor-pointer flex-shrink-0"
+                                                                    checked={showLabel}
+                                                                    onChange={(e) => setShowLabel(e.target.checked)}
+                                                                />
+                                                                <div>
+                                                                    <span className="text-sm font-semibold text-slate-700 group-hover:text-primary transition-colors">Mostrar Etiquetas</span>
+                                                                    <p className="text-[11px] text-slate-500 mt-0.5">Si se activa, el texto después del espacio se mostrará debajo de cada QR.</p>
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                )}
 
                                                 {/* Mobile: Actualizar button inside config panel */}
-                                                <div className="mt-4 md:hidden">
+                                                <div className="mt-6 md:hidden">
                                                     <button
                                                         onClick={() => {
                                                             setAppliedBulkText(bulkText);
                                                             setAppliedShowLabel(showLabel);
                                                             setMobileView('preview');
                                                         }}
-                                                        className={`w-full py-3 rounded-xl font-bold text-sm transition-all active:scale-95 flex items-center justify-center gap-2 ${isDirty ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg' : 'bg-slate-200 text-slate-500 cursor-default'}`}
+                                                        className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all active:scale-95 flex items-center justify-center gap-2 ${isDirty ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg' : 'bg-slate-200 text-slate-500 cursor-default'}`}
                                                     >
                                                         <MaterialIcon name={isDirty ? 'sync' : 'check_circle'} className="text-[18px]" />
                                                         {isDirty ? 'Generar QRs' : 'QRs al día'}
@@ -876,8 +1122,7 @@
                                         )}
 
                                         {activeTab === TAB_FORMAS && (
-                                            <section className="bg-white border border-outline-variant p-6 rounded-xl shadow-sm space-y-8">
-
+                                             <section className="bg-white border border-outline-variant p-6 rounded-xl shadow-sm space-y-8">
                                                 {/* --- Body Style --- */}
                                                 <div>
                                                     <h3 className="font-title-md text-on-surface mb-1">Estilo del Cuerpo</h3>
