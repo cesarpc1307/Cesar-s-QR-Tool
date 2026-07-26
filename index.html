@@ -4,6 +4,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- Politica de Seguridad (CSP) -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://cdnjs.cloudflare.com https://cdn.tailwindcss.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        font-src https://fonts.gstatic.com;
+        img-src 'self' data: blob:;
+        connect-src 'none';
+        frame-ancestors 'none';
+        base-uri 'self';
+        form-action 'none';
+        object-src 'none';
+    " />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
     <title>César’s QR Tool - Generador Masivo</title>
 
     <!-- PWA & Icon Configuration -->
@@ -30,16 +46,28 @@
         rel="stylesheet" />
 
     <!-- React & ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script crossorigin
+        src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"
+        integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z"></script>
+    <script crossorigin
+        src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"
+        integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1"></script>
 
     <!-- Babel -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script crossorigin
+        src="https://unpkg.com/@babel/standalone@7.26.9/babel.min.js"
+        integrity="sha384-pKNXKj7jF9BNMkQyGWg5YLfoPyqBa/gf7wjTSoTGQlwxbZB+sabJuKyOHR6JQvTd"></script>
 
     <!-- Libraries -->
-    <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script crossorigin
+        src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"
+        integrity="sha384-CHvehSuS0IW8Qj9IlAETJXbHf/SEi62VXMgODXi9p3CC3NUIuThj1Y0uAFnl30VB"></script>
+    <script crossorigin
+        src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
+        integrity="sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG"></script>
+    <script crossorigin
+        src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"
+        integrity="sha384-PlRSzpewlarQuj5alIadXwjNUX+2eNMKwr0f07ShWYLy8B6TjEbm7ZlcN/ScSbwy"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
 </head>
@@ -90,7 +118,7 @@
                                     </div>
                                     <div>
                                         <h2 className="text-xl font-extrabold text-slate-900">Acerca de la Herramienta</h2>
-                                        <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest">Versión 1.2.0</p>
+                                        <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest">Versión 1.2.1</p>
                                     </div>
                                 </div>
                                 <button onClick={onClose} className="p-2 rounded-full hover:bg-slate-100 transition-colors">
@@ -427,7 +455,7 @@
                 }
                 const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
                 cleanHex = cleanHex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
-                
+
                 const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(cleanHex);
                 return result ? `rgb(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)})` : '';
             };
@@ -957,7 +985,7 @@
                                                                 />
                                                             </div>
                                                         </div>
-                                                        
+
                                                         <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
                                                             <label className="flex items-center gap-3 cursor-pointer group min-h-[44px]">
                                                                 <input
@@ -971,7 +999,7 @@
                                                                     <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Muestra un texto de referencia debajo del código QR.</p>
                                                                 </div>
                                                             </label>
-                                                            
+
                                                             {singleHasLabel && (
                                                                 <div className="mt-3 animate-in fade-in slide-in-from-top-1 duration-200">
                                                                     <input
@@ -1056,7 +1084,7 @@
                                                                     <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Muestra un texto debajo del QR.</p>
                                                                 </div>
                                                             </label>
-                                                            
+
                                                             {waHasLabel && (
                                                                 <div className="mt-3 animate-in fade-in slide-in-from-top-1 duration-200">
                                                                     <input
@@ -1122,7 +1150,7 @@
                                         )}
 
                                         {activeTab === TAB_FORMAS && (
-                                             <section className="bg-white border border-outline-variant p-6 rounded-xl shadow-sm space-y-8">
+                                            <section className="bg-white border border-outline-variant p-6 rounded-xl shadow-sm space-y-8">
                                                 {/* --- Body Style --- */}
                                                 <div>
                                                     <h3 className="font-title-md text-on-surface mb-1">Estilo del Cuerpo</h3>
@@ -1218,11 +1246,11 @@
                                                         <label className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{fillType === 'gradient' ? 'Primario' : 'Frontal'}</label>
                                                         <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-200">
                                                             <div className="flex items-center gap-3">
-                                                                <input 
-                                                                    className="color-swatch-input flex-shrink-0" 
-                                                                    type="color" 
-                                                                    value={getValidHexForPicker(qrColor)} 
-                                                                    onChange={(e) => setQrColor(e.target.value)} 
+                                                                <input
+                                                                    className="color-swatch-input flex-shrink-0"
+                                                                    type="color"
+                                                                    value={getValidHexForPicker(qrColor)}
+                                                                    onChange={(e) => setQrColor(e.target.value)}
                                                                 />
                                                                 <div className="flex flex-col">
                                                                     <input
@@ -1251,11 +1279,11 @@
                                                                 <label className="text-xs font-semibold text-slate-500 uppercase tracking-widest mt-2">Secundario</label>
                                                                 <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-200">
                                                                     <div className="flex items-center gap-3">
-                                                                        <input 
-                                                                            className="color-swatch-input flex-shrink-0" 
-                                                                            type="color" 
-                                                                            value={getValidHexForPicker(qrColor2)} 
-                                                                            onChange={(e) => setQrColor2(e.target.value)} 
+                                                                        <input
+                                                                            className="color-swatch-input flex-shrink-0"
+                                                                            type="color"
+                                                                            value={getValidHexForPicker(qrColor2)}
+                                                                            onChange={(e) => setQrColor2(e.target.value)}
                                                                         />
                                                                         <div className="flex flex-col">
                                                                             <input
@@ -1300,11 +1328,11 @@
                                                     <div className={`flex flex-col gap-4 transition-opacity duration-300 ${isTransparent ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
                                                         <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-200">
                                                             <div className="flex items-center gap-3">
-                                                                <input 
-                                                                    className="color-swatch-input flex-shrink-0" 
-                                                                    type="color" 
-                                                                    value={getValidHexForPicker(bgColor)} 
-                                                                    onChange={(e) => setBgColor(e.target.value)} 
+                                                                <input
+                                                                    className="color-swatch-input flex-shrink-0"
+                                                                    type="color"
+                                                                    value={getValidHexForPicker(bgColor)}
+                                                                    onChange={(e) => setBgColor(e.target.value)}
                                                                     disabled={isTransparent}
                                                                 />
                                                                 <div className="flex flex-col">
@@ -1351,8 +1379,8 @@
                                                                 onClick={syncWithLogo}
                                                                 disabled={!logoUrl}
                                                                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-colors ${logoUrl
-                                                                        ? 'border-primary/40 text-primary hover:bg-primary/5'
-                                                                        : 'border-slate-200 text-slate-300 cursor-not-allowed'
+                                                                    ? 'border-primary/40 text-primary hover:bg-primary/5'
+                                                                    : 'border-slate-200 text-slate-300 cursor-not-allowed'
                                                                     }`}
                                                                 title={logoUrl ? 'Extraer color dominante del logo y redondear esquinas' : 'Sube un logo primero para sincronizar'}
                                                             >
