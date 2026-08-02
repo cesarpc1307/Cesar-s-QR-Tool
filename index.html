@@ -369,6 +369,96 @@
                 }
             };
 
+            const handleDownloadSVG = () => {
+                if (!url) return;
+                const filenameSvg = `qr_${(labelContent || 'code').replace(/[^a-zA-Z0-9]/g, '_').substring(0, 40)}.svg`;
+                try {
+                    const svgOptions = {
+                        type: 'svg',
+                        width: qrSize || 512,
+                        height: qrSize || 512,
+                        data: url,
+                        image: logoUrl,
+                        qrOptions: { errorCorrectionLevel: errorLevel || 'M' },
+                        dotsOptions: {
+                            type: dotStyle,
+                            color: fillType === 'solid' ? qrColor : undefined,
+                            gradient: fillType === 'gradient' ? {
+                                type: 'linear',
+                                rotation: Math.PI / 4,
+                                colorStops: [{ offset: 0, color: qrColor }, { offset: 1, color: qrColor2 }]
+                            } : undefined
+                        },
+                        backgroundOptions: { color: isTransparent ? 'rgba(0,0,0,0)' : bgColor },
+                        cornersSquareOptions: { type: eyeFrameStyle || 'square', color: eyeFrameColor || qrColor },
+                        cornersDotOptions: { type: eyePupilStyle || 'square', color: eyeFrameColor || qrColor },
+                        imageOptions: { crossOrigin: "anonymous", margin: quietZone === 'compact' ? 2 : 10 }
+                    };
+
+                    const svgQr = new window.QRCodeStyling(svgOptions);
+                    svgQr.getRawData("svg").then(blob => {
+                        if (showLabel && labelContent) {
+                            // Read the SVG text, append a <text> element for the label
+                            const reader = new FileReader();
+                            reader.onload = () => {
+                                const parser = new DOMParser();
+                                const svgDoc = parser.parseFromString(reader.result, 'image/svg+xml');
+                                const svgEl = svgDoc.documentElement;
+                                const w = parseFloat(svgEl.getAttribute('width') || qrSize || 512);
+                                const h = parseFloat(svgEl.getAttribute('height') || qrSize || 512);
+                                const fontSize = Math.round(w * 0.045);
+                                const padding = 20;
+                                const labelAreaHeight = fontSize + padding * 2;
+                                const newHeight = h + labelAreaHeight;
+
+                                svgEl.setAttribute('height', newHeight);
+                                svgEl.setAttribute('viewBox', `0 0 ${w} ${newHeight}`);
+
+                                // White background rect for label area
+                                const bgRect = svgDoc.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                                bgRect.setAttribute('x', '0');
+                                bgRect.setAttribute('y', h);
+                                bgRect.setAttribute('width', w);
+                                bgRect.setAttribute('height', labelAreaHeight);
+                                bgRect.setAttribute('fill', '#ffffff');
+                                svgEl.appendChild(bgRect);
+
+                                const textEl = svgDoc.createElementNS('http://www.w3.org/2000/svg', 'text');
+                                textEl.setAttribute('x', w / 2);
+                                textEl.setAttribute('y', h + padding + fontSize * 0.8);
+                                textEl.setAttribute('text-anchor', 'middle');
+                                textEl.setAttribute('font-family', 'Inter, Arial, sans-serif');
+                                textEl.setAttribute('font-weight', 'bold');
+                                textEl.setAttribute('font-size', fontSize);
+                                textEl.setAttribute('fill', '#1e293b');
+                                textEl.textContent = labelContent;
+                                svgEl.appendChild(textEl);
+
+                                const serializer = new XMLSerializer();
+                                const svgString = serializer.serializeToString(svgEl);
+                                const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+                                const blobUrl = URL.createObjectURL(svgBlob);
+                                const link = document.createElement('a');
+                                link.href = blobUrl;
+                                link.download = filenameSvg;
+                                link.click();
+                                setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+                            };
+                            reader.readAsText(blob);
+                        } else {
+                            const blobUrl = URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            link.href = blobUrl;
+                            link.download = filenameSvg;
+                            link.click();
+                            setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+                        }
+                    });
+                } catch (e) {
+                    console.error("Error generating SVG:", e);
+                }
+            };
+
             return (
                 <div
                     className="print-item group relative bg-white border border-slate-200 p-4 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col items-center gap-3 w-full flex-shrink-0"
@@ -382,13 +472,23 @@
                             <div className="w-full h-full flex items-center justify-center"><MaterialIcon name="sync" className="animate-spin text-slate-300" /></div>
                         )}
 
-                        {/* Centered Download Button on Hover */}
-                        <div className={`absolute inset-0 bg-white/20 backdrop-blur-[2px] flex items-center justify-center transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+                        {/* Centered Download Buttons on Hover */}
+                        <div className={`absolute inset-0 bg-white/20 backdrop-blur-[2px] flex items-center justify-center gap-3 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
                             <button
                                 onClick={handleDownload}
-                                className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-primary hover:scale-110 active:scale-95 transition-transform"
+                                title="Descargar PNG"
+                                className="flex flex-col items-center gap-1 px-3 py-2 bg-white rounded-2xl shadow-lg text-primary hover:scale-105 active:scale-95 transition-transform"
                             >
-                                <MaterialIcon name="download" className="text-[24px]" />
+                                <MaterialIcon name="image" className="text-[22px]" />
+                                <span className="text-[9px] font-bold uppercase tracking-wide">PNG</span>
+                            </button>
+                            <button
+                                onClick={handleDownloadSVG}
+                                title="Descargar SVG"
+                                className="flex flex-col items-center gap-1 px-3 py-2 bg-white rounded-2xl shadow-lg text-emerald-600 hover:scale-105 active:scale-95 transition-transform"
+                            >
+                                <MaterialIcon name="code" className="text-[22px]" />
+                                <span className="text-[9px] font-bold uppercase tracking-wide">SVG</span>
                             </button>
                         </div>
                     </div>
@@ -738,6 +838,126 @@
             };
 
             const isDirty = bulkText !== appliedBulkText || showLabel !== appliedShowLabel;
+
+            const getDensityWarning = () => {
+                if (datosMode === 'single') {
+                    const url = singleUrl.trim();
+                    if (url.length > 300) {
+                        return {
+                            hasWarning: true,
+                            message: `Este enlace es muy largo (${url.length} caracteres). El QR resultante será extremadamente denso, lo que podría dificultar su escaneo desde la distancia o con cámaras de baja resolución.`
+                        };
+                    }
+                } else if (datosMode === 'whatsapp') {
+                    const cleanPhone = waPhone.replace(/[^\d]/g, '');
+                    let url = 'https://wa.me/' + cleanPhone;
+                    if (waHasMessage && waMessage.trim()) {
+                        url += `?text=${encodeURIComponent(waMessage.trim())}`;
+                    }
+                    if (url.length > 300) {
+                        return {
+                            hasWarning: true,
+                            message: `El enlace final de WhatsApp (con mensaje personalizado codificado) es largo (${url.length} caracteres). El código QR resultante será muy denso. Te sugerimos reducir el mensaje personalizado.`
+                        };
+                    }
+                } else if (datosMode === 'bulk') {
+                    const denseLines = [];
+                    bulkTextVal.split('\n').forEach((line, idx) => {
+                        const trimmed = line.trim();
+                        if (!trimmed) return;
+                        const firstSpace = trimmed.indexOf(' ');
+                        const url = firstSpace === -1 ? trimmed : trimmed.substring(0, firstSpace);
+                        if (url.length > 300) {
+                            denseLines.push({ lineNum: idx + 1, length: url.length });
+                        }
+                    });
+                    if (denseLines.length > 0) {
+                        const lineSummary = denseLines.map(d => `línea ${d.lineNum} (${d.length} ch)`).join(', ');
+                        return {
+                            hasWarning: true,
+                            message: `Se detectaron enlaces muy largos en: ${lineSummary}. Esos códigos QR resultarán muy densos y difíciles de escanear. Te sugerimos usar un acortador de enlaces.`
+                        };
+                    }
+                }
+                return { hasWarning: false };
+            };
+
+            const densityWarning = getDensityWarning();
+
+            // Duplicate detection & line analysis for bulk mode
+            const getBulkDuplicates = () => {
+                if (datosMode !== 'bulk') return { count: 0, hasDuplicates: false, lineAnalysis: [], duplicateLineIndices: [] };
+                const rawLines = bulkTextVal.split('\n');
+                const seen = new Set();
+                const duplicateLineIndices = [];
+                const lineAnalysis = [];
+                let count = 0;
+
+                rawLines.forEach((rawLine, idx) => {
+                    const trimmed = rawLine.trim();
+                    if (!trimmed) {
+                        lineAnalysis.push({ lineNum: idx + 1, raw: rawLine, isDuplicate: false, isEmpty: true });
+                        return;
+                    }
+                    const spaceIdx = trimmed.indexOf(' ');
+                    const url = (spaceIdx === -1 ? trimmed : trimmed.substring(0, spaceIdx)).toLowerCase();
+                    
+                    if (seen.has(url)) {
+                        count++;
+                        duplicateLineIndices.push(idx);
+                        lineAnalysis.push({
+                            lineNum: idx + 1,
+                            raw: rawLine,
+                            url: url,
+                            label: spaceIdx === -1 ? '' : trimmed.substring(spaceIdx + 1),
+                            isDuplicate: true,
+                            isEmpty: false
+                        });
+                    } else {
+                        seen.add(url);
+                        lineAnalysis.push({
+                            lineNum: idx + 1,
+                            raw: rawLine,
+                            url: url,
+                            label: spaceIdx === -1 ? '' : trimmed.substring(spaceIdx + 1),
+                            isDuplicate: false,
+                            isEmpty: false
+                        });
+                    }
+                });
+
+                return { count, hasDuplicates: count > 0, lineAnalysis, duplicateLineIndices };
+            };
+
+            const bulkDuplicates = getBulkDuplicates();
+
+            const handleRemoveDuplicates = () => {
+                const rawLines = bulkTextVal.split('\n');
+                const seen = new Set();
+                const cleanLines = [];
+
+                rawLines.forEach((rawLine) => {
+                    const trimmed = rawLine.trim();
+                    if (!trimmed) {
+                        cleanLines.push(rawLine);
+                        return;
+                    }
+                    const spaceIdx = trimmed.indexOf(' ');
+                    const url = (spaceIdx === -1 ? trimmed : trimmed.substring(0, spaceIdx)).toLowerCase();
+                    if (!seen.has(url)) {
+                        seen.add(url);
+                        cleanLines.push(rawLine);
+                    }
+                });
+
+                setBulkTextVal(cleanLines.join('\n'));
+            };
+
+            const handleRemoveSingleLine = (lineIndex) => {
+                const rawLines = bulkTextVal.split('\n');
+                const updated = rawLines.filter((_, idx) => idx !== lineIndex);
+                setBulkTextVal(updated.join('\n'));
+            };
 
             const renderSidebarItem = (id, icon, label) => (
                 <button
@@ -1105,7 +1325,7 @@
                                                         <div>
                                                             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Lista de Enlaces &amp; Etiquetas</label>
                                                             <textarea
-                                                                className="w-full h-48 md:h-64 px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all font-mono text-sm leading-relaxed whitespace-pre-wrap"
+                                                                className={`w-full h-48 md:h-64 px-4 py-3 border rounded-xl focus:ring-2 outline-none transition-all font-mono text-sm leading-relaxed whitespace-pre-wrap ${bulkDuplicates.hasDuplicates ? "border-rose-300 bg-rose-50/20 focus:ring-rose-500" : "border-slate-200 focus:ring-indigo-500"}`}
                                                                 placeholder={"https://ejemplo.com/url-1 Mi Etiqueta 1\nhttps://ejemplo.com/url-2 SinEtiqueta"}
                                                                 value={bulkTextVal}
                                                                 onChange={(e) => setBulkTextVal(e.target.value)}
@@ -1115,7 +1335,72 @@
                                                             </p>
                                                         </div>
 
-                                                        <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 font-medium">
+                                                         {/* Duplicate Warning & Red Highlight Banner */}
+                                                         {bulkDuplicates.hasDuplicates && (
+                                                             <div className="p-4 bg-rose-50 border border-rose-200 text-rose-900 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-200 space-y-3">
+                                                                 <div className="flex items-center justify-between gap-3">
+                                                                     <div className="flex items-center gap-2.5">
+                                                                         <span className="material-symbols-outlined text-rose-500 text-xl flex-shrink-0 select-none">content_copy</span>
+                                                                         <div>
+                                                                             <h4 className="text-xs font-bold leading-none text-rose-800 uppercase tracking-wider mb-1">Duplicados detectados</h4>
+                                                                             <p className="text-[11px] text-rose-700 leading-relaxed font-semibold">
+                                                                                 {bulkDuplicates.count} {bulkDuplicates.count === 1 ? 'enlace repetido detectado' : 'enlaces repetidos detectados'}. {bulkDuplicates.count === 1 ? 'La línea resaltada en rojo se eliminará' : 'Las líneas resaltadas en rojo se eliminarán'}.
+                                                                             </p>
+                                                                         </div>
+                                                                     </div>
+                                                                     <button
+                                                                         onClick={handleRemoveDuplicates}
+                                                                         className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer"
+                                                                     >
+                                                                         <span className="material-symbols-outlined text-[16px]">auto_fix_high</span>
+                                                                         Eliminar {bulkDuplicates.count === 1 ? 'duplicado' : 'duplicados'}
+                                                                     </button>
+                                                                 </div>
+
+                                                                 {/* Line-by-line auditor preview showing repeated links painted in red */}
+                                                                 <div className="mt-3 bg-white/90 backdrop-blur border border-rose-200 rounded-xl p-2 space-y-1.5 max-h-52 overflow-y-auto">
+                                                                     {bulkDuplicates.lineAnalysis.map((item, idx) => {
+                                                                         if (item.isEmpty) return null;
+                                                                         return (
+                                                                             <div
+                                                                                 key={idx}
+                                                                                 className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-mono transition-all ${
+                                                                                     item.isDuplicate
+                                                                                         ? 'bg-rose-100/90 border border-rose-300 text-rose-900 font-bold shadow-xs'
+                                                                                         : 'bg-slate-50 text-slate-700 border border-slate-100'
+                                                                                 }`}
+                                                                             >
+                                                                                 <div className="flex items-center gap-2 truncate pr-2">
+                                                                                     <span className={`text-[10px] px-1.5 py-0.5 rounded font-sans font-bold ${item.isDuplicate ? 'bg-rose-600 text-white' : 'bg-slate-200 text-slate-600'}`}>
+                                                                                         #{item.lineNum}
+                                                                                     </span>
+                                                                                     <span className="truncate">{item.raw}</span>
+                                                                                 </div>
+                                                                                 {item.isDuplicate ? (
+                                                                                     <div className="flex items-center gap-2 flex-shrink-0">
+                                                                                         <span className="text-[10px] bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full font-sans font-extrabold uppercase tracking-wide flex items-center gap-1">
+                                                                                             <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse"></span>
+                                                                                             Repetido
+                                                                                         </span>
+                                                                                         <button
+                                                                                             onClick={() => handleRemoveSingleLine(idx)}
+                                                                                             title="Eliminar esta línea"
+                                                                                             className="p-1 hover:bg-rose-200 text-rose-700 hover:text-rose-900 rounded transition-colors cursor-pointer"
+                                                                                         >
+                                                                                             <span className="material-symbols-outlined text-sm">close</span>
+                                                                                         </button>
+                                                                                     </div>
+                                                                                 ) : (
+                                                                                     <span className="text-[10px] text-slate-400 font-sans font-medium flex-shrink-0">Original</span>
+                                                                                 )}
+                                                                             </div>
+                                                                         );
+                                                                     })}
+                                                                 </div>
+                                                             </div>
+                                                         )}
+
+                                                         <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 font-medium">
                                                             <label className="flex items-center gap-3 cursor-pointer group min-h-[44px]">
                                                                 <input
                                                                     type="checkbox"
@@ -1128,6 +1413,19 @@
                                                                     <p className="text-[11px] text-slate-500 mt-0.5">Si se activa, el texto después del espacio se mostrará debajo de cada QR.</p>
                                                                 </div>
                                                             </label>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {/* QR Density Warning Banner */}
+                                                {densityWarning.hasWarning && (
+                                                    <div className="mt-4 p-4 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl flex gap-3 animate-in fade-in slide-in-from-top-2 duration-200">
+                                                        <span className="material-symbols-outlined text-amber-600 text-xl flex-shrink-0 select-none">warning</span>
+                                                        <div className="flex-1">
+                                                            <h4 className="text-xs font-bold leading-none text-amber-800 uppercase tracking-wider mb-1">Aviso de Densidad</h4>
+                                                            <p className="text-[11px] text-amber-700 leading-relaxed font-semibold">
+                                                                {densityWarning.message}
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 )}
